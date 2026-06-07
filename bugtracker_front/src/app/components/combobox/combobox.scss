@@ -1,0 +1,75 @@
+.material-symbols-outlined {
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+}
+
+.cmb-cont {
+    width: 20rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cmb {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 2px solid #d6d6d6;
+    width: 100%;
+    padding: 0.5rem 2rem;
+    border-radius: 1.5rem;
+    justify-content: space-between;
+    background-color: transparent;
+    color: #d6d6d6;
+    position: relative;
+}
+
+.cmb:hover {
+    cursor: pointer;
+    border: 2px solid #a1a1a1;
+
+}
+
+.menu-cont {
+    position: absolute;
+    top: 4rem;
+    z-index: 1000;
+    background-color: #d6d6d6b4;
+    width: 90%;
+    backdrop-filter: blur(5px);
+    border-radius: 1rem;
+
+
+    ul {
+        margin: 0;
+        padding: 0;
+
+        li {
+            list-style-type: none;
+            width: 100%;
+
+            button {
+                background-color: transparent;
+                border: none;
+                font-size: 1rem;
+                width: 100%;
+                padding-block: 1rem;
+
+
+            }
+
+            button:hover {
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.116);
+
+            }
+        }
+    }
+
+
+
+}

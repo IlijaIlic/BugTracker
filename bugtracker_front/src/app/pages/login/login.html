@@ -1,0 +1,17 @@
+<div class="universal-page">
+    <form class="login-form shadow" name="login">
+        <h1 class="login-title">Login <span style="font-weight: 200;"> to your account! </span></h1>
+        <div class="input-cont">
+            <label>Email</label>
+            <input class="universal-inp-text" type="text" placeholder="Enter your email..." />
+        </div>
+        <div class="input-cont">
+            <label>Password</label>
+            <input class="universal-inp-text" type="password" />
+        </div>
+        <button class="universal-btn login-btn" type="submit">Login</button>
+    </form>
+    <span class="register-redirect">Don't have an account?
+        <button type="button" [routerLink]="'/register'">Register!</button>
+    </span>
+</div>

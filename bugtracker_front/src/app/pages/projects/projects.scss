@@ -1,0 +1,33 @@
+.project-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 5rem;
+    color: #2C2b30;
+    
+}
+
+.project-title {
+    font-size: 3rem;
+    font-weight: 100;
+}
+
+.projects-table {
+    margin-top: 2rem;
+    width: 100%;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    border-radius: 1rem 1rem 0rem 0rem;
+    overflow: hidden;
+
+
+}
+
+.collum-names {
+    background-color: #d6d6d6;
+    th {
+        padding-block: 0.5rem;
+        font-weight: 900;
+    }
+
+}

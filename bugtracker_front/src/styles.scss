@@ -1,0 +1,54 @@
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin: 0;
+}
+
+input {
+    font-family: "Inter", sans-serif;
+}
+
+button {
+    font-family: "Inter", sans-serif;
+}
+
+input:focus{
+  outline: none;
+}
+
+.universal-btn {
+    font-family: "Inter", sans-serif;
+    font-weight: 800;
+    font-size: 1.2rem;
+    width: fit-content;
+    padding: 0.5rem 2rem;
+    outline: none;
+    border: none;
+    border-radius: 1rem;
+    background-color: #d6d6d6;
+    color: #2C2b30;
+}
+
+.universal-inp-text{
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #d6d6d6;
+    color: #d6d6d6;
+    font-size: 1.5rem;
+}
+
+.shadow{
+    box-shadow: 0 0 2rem 0.5rem rgba(0, 0, 0, 0.274);
+}
+
+.universal-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

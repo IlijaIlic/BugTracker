@@ -1,28 +1,99 @@
-# Angular specific
+# .NET / ASP.NET Core
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.nuget.props
+*.nuget.targets
+*.nupkg
+*.snupkg
+**/packages/*
+
+## Other .NET files
+*.pdb
+*.log
+*.tmp
+*.tmp_proj
+*.cache
+*.coverage
+*.coveragexml
+StyleCopReport.xml
+BenchmarkDotNet.Artifacts/
+
+# Angular / Node.js
+## Compiled output
 /dist/
 /out-tsc/
 /tmp/
 /coverage/
-/e2e/test-output/
 /.angular/
-.angular/
 
-# Node modules and dependency files
+## Dependencies
 /node_modules/
-/package-lock.json
-/yarn.lock
+/bower_components/
 
-# Environment files
-/.env
+## Environment variables & secrets
+.env
+.env.local
+.env.*.local
 
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
+## Angular CLI
+.angular-cli.json
+.ng/
 
-# TypeScript cache
+## TypeScript / Build cache
 *.tsbuildinfo
 
-# Logs
+## Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+## Testing
+/testem.log
+e2e/*.js
+e2e/*.map
+
+# General
+## OS
+.DS_Store
+Thumbs.db
+
+## Editors / IDEs
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+*.swp
+*.swo
+
+## Misc
+*.bak
+*.log
+*.tlog
+coverage/
+.nyc_output/
