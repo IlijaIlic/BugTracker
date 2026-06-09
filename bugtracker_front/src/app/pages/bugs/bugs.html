@@ -1,1 +1,228 @@
-<p>bugs works!</p>
+<div class="bugs-page">
+
+    @if(this.showYourBugs){
+    <div class="ybugs-modal">
+        <div class="modal-bck shadow">
+
+            <div class="flex-row">
+                <div class="table-expl">Your Bugs</div>
+                <button class="x-btn align-end" (click)="closeYourBugsModal()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            </div>
+            <div class="table-click-text">For more details click on your bug...</div>
+
+            <div class="table-cont">
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Owner</th>
+                            <th>DateCreated</th>
+                            <th>Status</th>
+                            <th>Bugs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(bug of this.list; track $index){
+                        <tr (click)="bugMoreDetails(bug)">
+                            <th>TEST4</th>
+                            <th>TEST4</th>
+                            <th>TEST5</th>
+                            <th>TEST5</th>
+                            <th>TEST6</th>
+                            <th>TEST6</th>
+                        </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Total projects - {{this.list.length}}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if(this.showSubmitBug){
+    <div class="add-b-cont">
+        <div class="add-background shadow">
+            <button class="x-btn align-end margint-1" (click)="closeSubmitBug()">
+                <span class="material-symbols-outlined">
+                    cancel
+                </span>
+            </button>
+            <div class="flex-column">
+
+                <label class="add-label">Bug title</label>
+                <input class="universal-inp-text" type="text" placeholder="Name your bug..." />
+            </div>
+
+            <div class="flex-column">
+                <label class="add-label">Platform</label>
+                <app-combobox [options]="['Android', 'iOS', 'Web', 'Mobile Web']"
+                    [placeHolderText]="'Select bug platform...'" />
+            </div>
+
+            <div class="flex-column">
+                <label class="add-label">Priority</label>
+                <app-combobox [options]="['Low', 'Medium', 'High']" [placeHolderText]="'Select bug priority...'" />
+            </div>
+
+            <div class="flex-column">
+                <label class="add-label">Severity</label>
+                <app-combobox [options]="['Low', 'Moderate', 'Major', 'Critical']"
+                    [placeHolderText]="'Select bug severity...'" />
+            </div>
+
+            <div class="flex-column">
+                <label class="add-label">Description</label>
+                <textarea class="textarea-desc"></textarea>
+            </div>
+
+            <button class="universal-btn accent-btn shadow align-end marginb-1">Submit a bug</button>
+        </div>
+    </div>
+    }
+
+    @if(this.showBugMoreDetails){
+    <div class="bdetails-modal">
+
+        @if(selBug){
+
+        <!-- LIGHT PART -->
+        <div class="modal-light shadow">
+            <h1>Bug - <span style="font-weight: 500;">{{this.selBug}} </span></h1>
+            <div class="desc-cont">
+                <label class="add-label-light">Description</label>
+                <textarea class="textarea-desc-edit"></textarea>
+            </div>
+
+            <div class="delete-btn-cont">
+                <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+                <button class="delete-btn-text">DELETE</button>
+            </div>
+        </div>
+
+
+        <!-- DARK PART -->
+        <div class="modal-dark shadow">
+            <div class="x-btn-cont">
+
+                <button class="x-btn align-end" (click)="closeBugMoreDetails()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            </div>
+            <div class="edit-cont">
+
+                <div class="flex-column">
+
+                    <label class="add-label">Bug Name</label>
+                    <input class="universal-inp-text" type="text" placeholder="Enter project name..."
+                        [(ngModel)]="this.selBug" />
+                </div>
+
+                <div class="flex-column">
+                    <label class="add-label">Platform</label>
+                    <app-combobox [options]="['Android', 'iOS', 'Web', 'Mobile Web']"
+                        [placeHolderText]="'Select bug platform...'" />
+                </div>
+
+                <div class="flex-column">
+                    <label class="add-label">Priority</label>
+                    <app-combobox [options]="['Low', 'Medium', 'High']" [placeHolderText]="'Select bug priority...'" />
+                </div>
+
+                <div class="flex-column">
+                    <label class="add-label">Severity</label>
+                    <app-combobox [options]="['Low', 'Moderate', 'Major', 'Critical']"
+                        [placeHolderText]="'Select bug severity...'" />
+                </div>
+
+
+
+            </div>
+            <div class="confirm-btn-cont align-end">
+                <button class="confirm-btn-text">CONFIRM</button>
+                <button class="confirm-btn">
+                    <span class="material-symbols-outlined">
+                        check
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        }
+    </div>
+
+    }
+    <div class="flex-row">
+        <div class="bugs-title">
+            Bugs for project - <span style="font-weight: 600;">{{projectName}}</span>
+        </div>
+        <button class="universal-btn accent-btn shadow" (click)="openYourBugsModal()">
+            Bugs you submitted
+            <span class="material-symbols-outlined">
+                assignment
+            </span>
+        </button>
+    </div>
+
+    <div class="full-width">
+        <div class="table-click-text-2">For more details click on a bug...</div>
+        <div class="table-cont ">
+
+            <table class="bugs-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Owner</th>
+                        <th>DateCreated</th>
+                        <th>Status</th>
+                        <th>Bugs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(bug of this.list; track $index){
+                    <tr (click)="bugMoreDetails(bug)">
+                        <th>TEST4</th>
+                        <th>TEST4</th>
+                        <th>TEST5</th>
+                        <th>TEST5</th>
+                        <th>TEST6</th>
+                        <th>TEST6</th>
+                    </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Total projects - {{this.list.length}}</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+        <button class="universal-btn accent-btn shadow center" (click)="openSubmitBug()">
+            Submit a new bug
+            <span class="material-symbols-outlined">add_2</span>
+        </button>
+
+</div>

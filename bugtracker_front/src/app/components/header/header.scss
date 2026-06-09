@@ -2,8 +2,14 @@
     min-width: 100%;
     max-width: 100%;
     font-size: 2rem;
+    border-bottom: 1px solid #2c2b3033;
+    padding-block: 1rem;
 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     h1{
         color: #2C2b30;
+        margin-left: 1rem;
     }
 }

@@ -1,8 +1,27 @@
-body {
+body,html {
     font-family: "Inter", sans-serif;
     margin: 0;
     padding: 0;
+    position: relative;
+    height: 100%;
 }
+
+app-root {
+    display: block;
+    height: 100%;
+}
+
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.content {
+    flex: 1;
+    overflow: hidden;
+}
+
 
 h1 {
     margin: 0;
@@ -33,6 +52,11 @@ input:focus{
     color: #2C2b30;
 }
 
+.universal-btn:hover{
+    cursor: pointer;
+    background-color: #c0c0c0;
+}
+
 .universal-inp-text{
     background-color: transparent;
     border: none;
@@ -41,14 +65,71 @@ input:focus{
     font-size: 1.5rem;
 }
 
+.universal-inp-text:focus{
+    border-bottom: 2px solid #979797;
+
+}
+
 .shadow{
-    box-shadow: 0 0 2rem 0.5rem rgba(0, 0, 0, 0.274);
+    box-shadow: 0 0 1.5rem 0.5rem rgba(0, 0, 0, 0.192);
 }
 
 .universal-page {
-    height: 100vh;
+    height:fit-content;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    height: 100%;
+    
+}
+
+.flex-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.flex-column{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.overflow-h {
+  overflow-y: hidden;
+}
+
+.center{
+    align-self: center;
+    justify-self: center;
+}
+
+.align-end{
+    align-self: flex-end;
+}
+
+
+.x-btn {
+    background-color: transparent;
+    transition: 0.15s color ease-in-out;
+    color: #d6d6d6;
+    border: none;
+    border-radius: 50%;
+}
+
+.x-btn .material-symbols-outlined {
+    font-size: 2rem;
+}
+
+.x-btn:hover {
+    cursor: pointer;
+    color: #979797;
+
+}
+
+.full-width{
+    width: 100%;
 }

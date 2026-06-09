@@ -1,19 +1,221 @@
 <div class="project-page">
-    <div class="project-title">Available projects</div>
-    <table class="projects-table">
-        <thead>
-            <tr class="collum-names">
-                <th>ID</th>
-                <th>Name</th>
-                <th>TEST3</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>TEST4</th>
-                <th>TEST5</th>
-                <th>TEST6</th>
-            </tr>
-        </tbody>
-    </table>
+    @if(this.showYourProjects){
+    <div class="yprojects-modal">
+        <div class="modal-bck shadow">
+
+            <div class="flex-row">
+                <div class="table-expl">Your Projects</div>
+                <button class="x-btn align-end" (click)="closeYourProjects()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            </div>
+            <div class="table-click-text">For more details click on your project...</div>
+            <div class="table-cont">
+
+                <table class="modal-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>DateCreated</th>
+                            <th>Status</th>
+                            <th>Bugs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(project of this.list; track $index){
+                        <tr (click)="projectMoreDetails(project)">
+                            <th>TEST4</th>
+                            <th>TEST5</th>
+                            <th>TEST5</th>
+                            <th>TEST6</th>
+                            <th>{{project}}</th>
+                        </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Total projects - {{this.list.length}}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if(this.showAddProject){
+    <div class="add-p-cont">
+        <div class="add-background shadow">
+            <button class="x-btn align-end margint-1" (click)="closeAddProject()"><span
+                    class="material-symbols-outlined">
+                    cancel
+                </span></button>
+            <div class="flex-column">
+
+                <label class="add-label">Project Name</label>
+                <input class="universal-inp-text" type="text" placeholder="Enter project name..." />
+            </div>
+            <div class="flex-column">
+                <label class="add-label">Status</label>
+                <app-combobox [options]="['Pending', 'Working']"
+                    [placeHolderText]="'Select status of the project...'" />
+            </div>
+            <div class="flex-column">
+                <label class="add-label">Description</label>
+                <textarea class="textarea-desc"></textarea>
+            </div>
+
+
+            <button class="universal-btn accent-btn shadow align-end marginb-1">Create new project</button>
+        </div>
+    </div>
+    }
+
+    @if(this.showProjectMoreDetails){
+    <div class="pdetails-modal">
+
+        @if(selProject){
+
+        <!-- LIGHT PART -->
+        <div class="modal-light shadow">
+            <h1>Project - <span style="font-weight: 500;">{{this.selProject}} </span></h1>
+            <div>
+                <div>
+                    Current number of bugs: <span>140</span>
+                </div>
+
+                <div class="table-cont">
+
+                    <table class="bugs-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Severity</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for(nmb of this.list; track $index){
+                            <tr>
+                                <th>TEST5</th>
+                                <th>TEST5</th>
+                                <th>TEST6</th>
+                                <th>TEST6</th>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="delete-btn-cont">
+                <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+                <button class="delete-btn-text">DELETE</button>
+            </div>
+        </div>
+
+
+        <!-- DARK PART -->
+        <div class="modal-dark shadow">
+            <div class="x-btn-cont">
+
+                <button class="x-btn align-end" (click)="closeProjectMoreDetails()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            </div>
+            <div class="edit-cont">
+
+                <div class="flex-column">
+
+                    <label class="add-label">Project Name</label>
+                    <input class="universal-inp-text" type="text" placeholder="Enter project name..."
+                        [(ngModel)]="this.selProject" />
+                </div>
+
+                <div class="flex-column">
+                    <label class="add-label">Status</label>
+                    <app-combobox [options]="['Pending', 'Working']"
+                        [placeHolderText]="'Change status of the project...'" />
+                </div>
+                <div class="flex-column">
+                    <label class="add-label">Description</label>
+                    <textarea class="textarea-desc-edit"></textarea>
+                </div>
+            </div>
+            <div class="confirm-btn-cont align-end">
+                <button class="confirm-btn-text">CONFIRM</button>
+                <button class="confirm-btn">
+                    <span class="material-symbols-outlined">
+                        check
+                    </span>
+                </button>
+            </div>
+        </div>
+
+        }
+    </div>
+
+    }
+    <div class="flex-row">
+        <div class="project-title">
+            Available projects
+        </div>
+        <button class="universal-btn accent-btn shadow" (click)="openYourProjects()">
+            Your projects
+            <span class="material-symbols-outlined">
+                assignment
+            </span>
+        </button>
+    </div>
+    <div class="table-cont">
+
+        <table class="projects-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>DateCreated</th>
+                    <th>Status</th>
+                    <th>Bugs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(nmb of this.list; track $index){
+                <tr>
+                    <th>TEST4</th>
+                    <th>TEST4</th>
+                    <th>TEST5</th>
+                    <th>TEST5</th>
+                    <th>TEST6</th>
+                    <th>TEST6</th>
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Total projects - {{this.list.length}}</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <button class="universal-btn accent-btn shadow center" (click)="this.openAddProject()">
+        Create a new project
+        <span class="material-symbols-outlined">add_2</span>
+    </button>
 </div>
