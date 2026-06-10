@@ -56,6 +56,11 @@
 
     @if(this.showSubmitBug){
     <div class="add-b-cont">
+        <div class="media-background">
+            <img class="upload-img" [src]="previewUrl || 'assets/noscreenshot.png'" alt="Uploaded picture" />
+            <button class="universal-btn accent-btn" (click)="fileInput.click()">Add a screenshot</button>
+            <input type="file" accept="image/*" style="display: none;" (change)="onFileSelected($event)" #fileInput />
+        </div>
         <div class="add-background shadow">
             <button class="x-btn align-end margint-1" (click)="closeSubmitBug()">
                 <span class="material-symbols-outlined">
@@ -92,6 +97,7 @@
 
             <button class="universal-btn accent-btn shadow align-end marginb-1">Submit a bug</button>
         </div>
+
     </div>
     }
 
@@ -103,15 +109,31 @@
         <!-- LIGHT PART -->
         <div class="modal-light shadow">
             <h1>Bug - <span style="font-weight: 500;">{{this.selBug}} </span></h1>
+
             <div class="desc-cont">
                 <label class="add-label-light">Description</label>
                 <textarea class="textarea-desc-edit"></textarea>
             </div>
 
-            <div class="delete-btn-cont">
-                <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
-                <button class="delete-btn-text">DELETE</button>
+            <!-- <div class="flex-column">
+                    <img class="upload-img" [src]="previewUrlEdit || 'assets/noscreenshot.png'" alt="Uploaded picture" />
+                    <button class="universal-btn accent-btn" (click)="fileInput.click()">Change a screenshot</button>
+                    <input type="file" accept="image/*" style="display: none;" (change)="onFileSelectedEdit($event)"
+                    #fileInput />
+            </div> -->
+
+            <div class="flex-row">
+
+                <div class="delete-btn-cont">
+                    <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+                    <button class="delete-btn-text">DELETE</button>
+                </div>
+                <div class="confirm-btn-cont" (click)="openBugImage()">
+                    <button class="confirm-btn"><span class="material-symbols-outlined">image</span></button>
+                    <button class="confirm-btn-text">SCREENSHOT</button>
+                </div>
             </div>
+
         </div>
 
 
@@ -151,6 +173,11 @@
                         [placeHolderText]="'Select bug severity...'" />
                 </div>
 
+                <div class="flex-column">
+                    <label class="add-label">Bug resolved - date</label>
+                    <input type="date" class="date" />
+                </div>
+
 
 
             </div>
@@ -168,9 +195,55 @@
     </div>
 
     }
+
+    @if(this.showBugImage){
+    <div class="ybugs-modal">
+        <div class="modal-bck shadow">
+            <button class="x-btn align-end " (click)="closeBugImage()">
+                <span class="material-symbols-outlined">
+                    cancel
+                </span>
+            </button>
+            <div class="flex-column-img">
+                <img class="upload-img" [src]="previewUrlEdit || 'assets/noscreenshot.png'" alt="Uploaded picture" />
+                <button class="universal-btn accent-btn" (click)="fileInput.click()">Change a screenshot</button>
+                <input type="file" accept="image/*" style="display: none;" (change)="onFileSelectedEdit($event)"
+                    #fileInput />
+            </div>
+        </div>
+    </div>
+
+    }
+
+    @if(this.showProjectDesc){
+    <div class="ybugs-modal">
+        <div class="modal-bck shadow">
+            <div class="flex-row">
+                <div class="table-expl">Project Description</div>
+                <button class="x-btn align-end" (click)="closeProjectDesc()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            </div>
+
+            <p class="project-description">
+                DESCRIPTION
+            </p>
+        </div>
+    </div>
+    }
+
     <div class="flex-row">
         <div class="bugs-title">
-            Bugs for project - <span style="font-weight: 600;">{{projectName}}</span>
+            Bugs for project -
+            <span>
+                <button class="desc-button" style="font-weight: 600;" (click)="openProjectDesc()">{{projectName}}
+                    <span class="material-symbols-outlined">
+                        description
+                    </span>
+                </button>
+            </span>
         </div>
         <button class="universal-btn accent-btn shadow" (click)="openYourBugsModal()">
             Bugs you submitted
@@ -180,7 +253,9 @@
         </button>
     </div>
 
+
     <div class="full-width">
+        <input type="text" class="search-input" placeholder="Search a bug based on its name..." />
         <div class="table-click-text-2">For more details click on a bug...</div>
         <div class="table-cont ">
 
@@ -220,9 +295,9 @@
             </table>
         </div>
     </div>
-        <button class="universal-btn accent-btn shadow center" (click)="openSubmitBug()">
-            Submit a new bug
-            <span class="material-symbols-outlined">add_2</span>
-        </button>
+    <button class="universal-btn accent-btn shadow center" (click)="openSubmitBug()">
+        Submit a new bug
+        <span class="material-symbols-outlined">add_2</span>
+    </button>
 
 </div>

@@ -1,0 +1,28 @@
+.login-register-cont{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.separate{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    span{
+        font-weight: 300;
+    }
+}
+hr{
+    width: 10%;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.288);
+    margin: 0;
+    height: 2px;
+}

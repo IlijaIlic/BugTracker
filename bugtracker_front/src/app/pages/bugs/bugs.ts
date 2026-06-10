@@ -17,6 +17,15 @@ export class Bugs {
   protected showYourBugs: boolean = false;
   protected showSubmitBug: boolean = false;
   protected showBugMoreDetails: boolean = false
+  protected showProjectDesc: boolean = false
+  protected showBugImage: boolean = false
+
+
+  protected previewUrl: string | ArrayBuffer | null = null;
+  protected selectedFile: File | null = null;
+
+  protected previewUrlEdit: string | ArrayBuffer | null = null;
+  protected selectedFileEdit: File | null = null;
 
 
 
@@ -45,6 +54,9 @@ export class Bugs {
 
   closeSubmitBug() {
     this.showSubmitBug = false
+    this.previewUrl = null;
+    this.selectedFile = null;
+
     this.enableScroll()
   }
 
@@ -61,8 +73,48 @@ export class Bugs {
     this.showBugMoreDetails = false
     this.enableScroll()
 
-
     this.selBug = null
   }
+
+  openProjectDesc() {
+    this.showProjectDesc = true;
+    this.disableScroll()
+  }
+
+  closeProjectDesc() {
+    this.showProjectDesc = false
+    this.enableScroll()
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0]
+      const reader = new FileReader()
+      reader.onload = () => this.previewUrl = reader.result
+      reader.readAsDataURL(this.selectedFile)
+    }
+  }
+
+    onFileSelectedEdit(event: Event) {
+    const input = event.target as HTMLInputElement
+    if (input.files && input.files[0]) {
+      this.selectedFileEdit = input.files[0]
+      const reader = new FileReader()
+      reader.onload = () => this.previewUrlEdit = reader.result
+      reader.readAsDataURL(this.selectedFileEdit)
+    }
+  }
+
+  openBugImage(){
+    this.showBugImage = true;
+    this.enableScroll();
+  }
+
+  closeBugImage(){
+    this.showBugImage = false;
+    this.disableScroll()
+  }
+
 
 }
