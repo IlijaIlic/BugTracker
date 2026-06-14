@@ -1,6 +1,13 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Combobox } from '../../components/combobox/combobox';
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, switchMap } from 'rxjs';
+import { ProjectService } from '../../services/project.service';
+import { ProjectModel } from '../../models/project.model';
+import { BugModel, BugModelUpdate } from '../../models/bug.model';
+import { BugService } from '../../services/bug.service';
+
 
 @Component({
   selector: 'app-bugs',
@@ -8,12 +15,13 @@ import { Combobox } from '../../components/combobox/combobox';
   templateUrl: './bugs.html',
   styleUrl: './bugs.scss',
 })
-export class Bugs {
+export class Bugs implements OnInit {
 
-  protected projectName: string = "YourProjectName";
-  protected list: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  protected selBug: any = null;
+  protected route = inject(ActivatedRoute)
+  protected projectService = inject(ProjectService)
+  protected bugService = inject(BugService)
 
+  public imageApi = 'https://localhost:7236/'
   protected showYourBugs: boolean = false;
   protected showSubmitBug: boolean = false;
   protected showBugMoreDetails: boolean = false
@@ -27,6 +35,94 @@ export class Bugs {
   protected previewUrlEdit: string | ArrayBuffer | null = null;
   protected selectedFileEdit: File | null = null;
 
+  protected project: ProjectModel | null = null;
+  protected myBugs: BugModel[] | null = null;
+  protected newBug: BugModel = {
+    id: "",
+    name: "",
+    description: "",
+    status: 'Active',
+    severity: 'Low',
+    priority: 'Low',
+    platform: 'Android',
+    project: this.project!,
+    imageUrl: "",
+    ownerName: ""
+  };
+
+  protected selBug: BugModel | null = null;
+  protected selBugDate: string | null = null;
+  protected selBugOriginalName: string = "";
+
+  ngOnInit(): void {
+    this.getAll()
+  }
+
+  getAll() {
+    this.route.paramMap.pipe(
+      switchMap(params => {
+        const bugId = Number(params.get('id'));
+        return forkJoin({
+          project: this.projectService.getById(bugId),
+          myBugs: this.bugService.getMyBugs(bugId)
+        });
+      })).subscribe({
+        next: (resp) => {
+          this.project = resp.project
+          this.myBugs = resp.myBugs
+          console.log(this.project)
+        },
+        error: (err) => console.log(err)
+      }
+    )
+  }
+
+  dateToReadable(date: any) {
+    const dateFormat = new Date(date);
+    return dateFormat.toLocaleDateString("en-US", {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  handleSubmitBug() {
+    const formData = new FormData();
+    formData.append('Name', this.newBug!.name);
+    formData.append('Platform', this.newBug!.platform);
+    formData.append('Severity', this.newBug!.severity);
+    formData.append('Priority', this.newBug!.priority);
+    formData.append("ProjectId", this.project!.id.toString())
+    if (this.newBug!.description) formData.append('Description', this.newBug!.description);
+    if (this.selectedFile) formData.append('Image', this.selectedFile);
+
+    this.bugService.addBug(formData).subscribe({
+      next: (resp) => console.log(resp),
+      error: (err) => console.log(err),
+    })
+  }
+
+  handleUpdate() {
+    const formData = new FormData();
+    if (this.selBug!.name) formData.append('Name', this.selBug!.name);
+    if (this.selBug!.platform) formData.append('Platform', this.selBug!.platform);
+    if (this.selBug!.severity) formData.append('Severity', this.selBug!.severity);
+    if (this.selBug!.priority) formData.append('Priority', this.selBug!.priority);
+    if (this.selBug!.description) formData.append('Description', this.selBug!.description);
+    if (this.selectedFileEdit) formData.append('Image', this.selectedFileEdit);
+    if (this.selBugDate) formData.append('DateFixed', this.selBugDate);
+
+    this.bugService.updateBug(formData, +this.selBug!.id).subscribe({
+      next: (resp) => {
+        console.log(resp)
+        this.closeBugMoreDetails()
+        this.getAll()
+      },
+      error: (err) => console.log(err)
+    })
+  }
 
 
   disableScroll() {
@@ -60,13 +156,15 @@ export class Bugs {
     this.enableScroll()
   }
 
-  bugMoreDetails(project: any) {
+  bugMoreDetails(bug: BugModel) {
     this.showBugMoreDetails = true
     this.disableScroll()
 
 
-    console.log(project)
-    this.selBug = project
+    console.log(bug)
+    this.selBug = { ...bug }
+    if (bug.dateFixed) this.selBugDate = new Date(bug.dateFixed).toISOString().split('T')[0]
+    this.selBugOriginalName = bug.name
   }
 
   closeBugMoreDetails() {
@@ -74,6 +172,7 @@ export class Bugs {
     this.enableScroll()
 
     this.selBug = null
+    this.selBugDate = null
   }
 
   openProjectDesc() {
@@ -96,7 +195,7 @@ export class Bugs {
     }
   }
 
-    onFileSelectedEdit(event: Event) {
+  onFileSelectedEdit(event: Event) {
     const input = event.target as HTMLInputElement
     if (input.files && input.files[0]) {
       this.selectedFileEdit = input.files[0]
@@ -106,12 +205,12 @@ export class Bugs {
     }
   }
 
-  openBugImage(){
+  openBugImage() {
     this.showBugImage = true;
     this.enableScroll();
   }
 
-  closeBugImage(){
+  closeBugImage() {
     this.showBugImage = false;
     this.disableScroll()
   }

@@ -16,34 +16,37 @@
 
                 <table class="modal-table">
                     <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>DateCreated</th>
-                            <th>Status</th>
-                            <th>Bugs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(project of this.list; track $index){
-                        <tr (click)="projectMoreDetails(project)">
-                            <th>TEST4</th>
-                            <th>TEST5</th>
-                            <th>TEST5</th>
-                            <th>TEST6</th>
-                            <th>{{project}}</th>
-                        </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>Total projects - {{this.list.length}}</th>
-                        </tr>
-                    </tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>DateCreated</th>
+                    <th>Status</th>
+                    <th>Bugs</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(proj of this.myProjects; track $index){
+                <tr (click)="projectMoreDetails(proj)">
+                    <th>{{proj.id}}</th>
+                    <th>{{proj.name}}</th>
+                    <th>{{proj.ownerName}}</th>
+                    <th>{{proj.status}}</th>
+                    <th>{{proj.status}}</th>
+                    <th>{{proj.bugCount}}</th>
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Total projects - {{this.myProjects.length}}</th>
+                </tr>
+            </tfoot>
                 </table>
             </div>
         </div>
@@ -60,20 +63,21 @@
             <div class="flex-column">
 
                 <label class="add-label">Project Name</label>
-                <input class="universal-inp-text" type="text" placeholder="Enter project name..." />
+                <input class="universal-inp-text" type="text" placeholder="Enter project name..."
+                    [(ngModel)]="this.addProject.name" />
             </div>
             <div class="flex-column">
                 <label class="add-label">Status</label>
-                <app-combobox [options]="['Pending', 'Working']"
-                    [placeHolderText]="'Select status of the project...'" />
+                <app-combobox [options]="['Planning', 'Active', 'Blocked']"
+                    [placeHolderText]="'Select status of the project...'" (chosenText)="handleProjectStatus($event)" />
             </div>
             <div class="flex-column">
                 <label class="add-label">Description</label>
-                <textarea class="textarea-desc"></textarea>
+                <textarea class="textarea-desc" [(ngModel)]="this.addProject.description"></textarea>
             </div>
 
 
-            <button class="universal-btn accent-btn shadow align-end marginb-1">Create new project</button>
+            <button class="universal-btn accent-btn shadow align-end marginb-1" (click)="handleAddProject()">Create new project</button>
         </div>
     </div>
     }
@@ -85,10 +89,10 @@
 
         <!-- LIGHT PART -->
         <div class="modal-light shadow">
-            <h1>Project - <span style="font-weight: 500;">{{this.selProject}} </span></h1>
+            <h1>Project - <span style="font-weight: 500;">{{this.selProjectTitle}} </span></h1>
             <div>
                 <div>
-                    Current number of bugs: <span>140</span>
+                    Current number of bugs: <span>{{this.selProject.bugCount}}</span>
                 </div>
 
                 <div class="table-cont">
@@ -99,16 +103,16 @@
                                 <th>ID</th>
                                 <th>Name</th>
                                 <th>Severity</th>
-                                <th>Priority</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @for(nmb of this.list; track $index){
+                            @for(bug of this.selProject.bugsSum; track $index){
                             <tr>
-                                <th>TEST5</th>
-                                <th>TEST5</th>
-                                <th>TEST6</th>
-                                <th>TEST6</th>
+                                <th>{{bug.id}}</th>
+                                <th>{{bug.name}}</th>
+                                <th>{{bug.severity}}</th>
+                                <th>{{bug.status}}</th>
                             </tr>
                             }
                         </tbody>
@@ -139,20 +143,20 @@
 
                     <label class="add-label">Project Name</label>
                     <input class="universal-inp-text" type="text" placeholder="Enter project name..."
-                        [(ngModel)]="this.selProject" />
+                        [(ngModel)]="this.selProject.name" />
                 </div>
 
                 <div class="flex-column">
                     <label class="add-label">Status</label>
-                    <app-combobox [options]="['Pending', 'Working']"
-                        [placeHolderText]="'Change status of the project...'" />
+                    <app-combobox [options]="['Planning', 'Active', 'Blocked']"
+                        [placeHolderText]="'Change status of the project...'" (chosenText)="this.selProject.status = $event" [startText]="this.selProject.status" />
                 </div>
                 <div class="flex-column">
                     <label class="add-label">Description</label>
-                    <textarea class="textarea-desc-edit"></textarea>
+                    <textarea class="textarea-desc-edit" [(ngModel)]="this.selProject.description">{{this.selProject.description}}</textarea>
                 </div>
             </div>
-            <div class="confirm-btn-cont align-end">
+            <div class="confirm-btn-cont align-end" (click)="handleEditProject()">
                 <button class="confirm-btn-text">CONFIRM</button>
                 <button class="confirm-btn">
                     <span class="material-symbols-outlined">
@@ -166,6 +170,7 @@
     </div>
 
     }
+
     <div class="flex-row">
         <div class="project-title">
             Available projects
@@ -193,14 +198,14 @@
                 </tr>
             </thead>
             <tbody>
-                @for(nmb of this.list; track $index){
-                <tr>
-                    <th>TEST4</th>
-                    <th>TEST4</th>
-                    <th>TEST5</th>
-                    <th>TEST5</th>
-                    <th>TEST6</th>
-                    <th>TEST6</th>
+                @for(proj of this.projects; track $index){
+                <tr (click)="handleNavigateToProject(proj)">
+                    <th>{{proj.id}}</th>
+                    <th>{{proj.name}}</th>
+                    <th>{{proj.ownerName}}</th>
+                    <th>{{proj.status}}</th>
+                    <th>{{proj.status}}</th>
+                    <th>{{proj.bugCount}}</th>
                 </tr>
                 }
             </tbody>
@@ -211,7 +216,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
-                    <th>Total projects - {{this.list.length}}</th>
+                    <th>Total projects - {{this.projects.length}}</th>
                 </tr>
             </tfoot>
         </table>

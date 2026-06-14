@@ -1,0 +1,6 @@
+@bugtracker_back_HostAddress = http://localhost:5156
+
+GET {{bugtracker_back_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

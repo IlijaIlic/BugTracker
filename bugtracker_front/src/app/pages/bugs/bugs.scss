@@ -16,7 +16,7 @@
     align-items: center;
 }
 
-.desc-button{
+.desc-button {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -25,7 +25,7 @@
     font-size: 2.5rem;
 }
 
-.desc-button:hover{
+.desc-button:hover {
     cursor: pointer;
     color: #2C2b30;
 }
@@ -66,6 +66,16 @@
         tr:hover {
             background-color: #f58e7c17;
         }
+
+        .fixed-bug {
+            background-color: #fd0000;
+            color: white;
+        }
+
+
+        .fixed-bug:hover {
+            background-color: #630000;
+        }
     }
 
     thead {
@@ -79,6 +89,8 @@
         bottom: 0;
         z-index: 2;
     }
+
+
 
 
 }
@@ -113,8 +125,8 @@
     margin-block: 2rem 1rem;
 }
 
-.table-click-text-2{
-     color: #2C2b30;
+.table-click-text-2 {
+    color: #2C2b30;
     font-weight: 200;
 }
 
@@ -180,20 +192,21 @@
     }
 
 
-   
+
 }
 
- thead {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-    }
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
 
-    tfoot {
-        position: sticky;
-        bottom: 0;
-        z-index: 2;
-    }
+tfoot {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+}
+
 
 
 .add-b-cont {
@@ -220,10 +233,10 @@
     justify-content: space-between;
 }
 
-.media-background{
-     margin-left: auto;
+.media-background {
+    margin-left: auto;
     height: 50%;
-    top:50%;
+    top: 50%;
     translate: 0% 50%;
     width: fit-content;
     background-color: #d6d6d6;
@@ -469,7 +482,7 @@
     padding-block: 2rem;
 }
 
-.date{
+.date {
     background-color: #2C2b30;
     border: 2px solid #d6d6d6;
     border-radius: 1.5rem;
@@ -478,7 +491,7 @@
     color: #d6d6d6;
 }
 
-.upload-img{
+.upload-img {
     height: 20rem;
     width: 20rem;
     border-radius: 2rem;
@@ -486,19 +499,19 @@
     object-fit: cover;
 }
 
-.project-description{
+.project-description {
     color: #d6d6d6;
     max-height: 30rem;
     overflow: hidden;
 }
 
-.desc-image{
+.desc-image {
     display: flex;
     flex-direction: row;
     gap: 2rem;
 }
 
-.flex-column-img{
+.flex-column-img {
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -1,3 +1,6 @@
 <div class="footer">
     <h1>Hello <span style="font-weight: 300;">{{userName}}</span></h1>
+    @if(this.authService.currentUser()){
+        <button class="logout-btn" (click)="handleLogout()">Logout</button>
+    }
 </div>

@@ -1,6 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Combobox } from '../../components/combobox/combobox';
+import { ProjectService } from '../../services/project.service';
+import { AddProjectModel, ProjectModel } from '../../models/project.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects',
@@ -8,16 +11,81 @@ import { Combobox } from '../../components/combobox/combobox';
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })
-export class Projects {
+export class Projects implements OnInit {
 
-  protected list: number[] = [1, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5, 2, 3, 4, 5]
-  protected selProject: any = null
+  protected projectService = inject(ProjectService);
+  protected router = inject(Router);
 
   protected showYourProjects: boolean = false;
   protected showAddProject: boolean = false;
   protected showProjectMoreDetails: boolean = false;
 
 
+  protected addProject: AddProjectModel = {
+    description: "",
+    name: "",
+    status: "Active"
+  }
+
+  protected projects: ProjectModel[] = [];
+  protected myProjects: ProjectModel[] = [];
+
+  protected selProject: ProjectModel | null = null
+  protected selProjectTitle: string = ""
+
+  ngOnInit(): void {
+    this.getProjects()
+  }
+
+  getProjects() {
+    this.projectService.getAll().subscribe({
+      next: (resp) => {
+        this.projects = resp
+        console.log(resp)
+      },
+      error: (err) => console.log(err)
+    })
+
+    this.projectService.getMine().subscribe({
+      next: (resp) => {
+        this.myProjects = resp
+        console.log(resp)
+      },
+      error: (err) => console.log(err)
+    })
+  }
+
+  handleAddProject() {
+    this.projectService.addProject(this.addProject).subscribe({
+      next: (resp) => console.log(resp),
+      error: (err) => console.log(err)
+    });
+  }
+
+  handleEditProject() {
+    const updateData: AddProjectModel = {
+      description: this.selProject!.description,
+      name: this.selProject!.name,
+      status: this.selProject!.status,
+    }
+
+    this.projectService.updateProject(updateData, this.selProject!  .id).subscribe({
+      next: (resp) => {
+        console.log(resp)
+        this.getProjects()
+        this.closeProjectMoreDetails()  
+      },
+      error: (err) => console.log(err)
+    });
+  }
+
+  handleProjectStatus(event: any) {
+    this.addProject.status = event
+  }
+
+  handleNavigateToProject(proj: ProjectModel) {
+    this.router.navigate(['/bugs/', proj.id])
+  }
 
   disableScroll() {
     document.body.classList.add('overflow-h')
@@ -47,12 +115,13 @@ export class Projects {
     this.enableScroll()
   }
 
-  projectMoreDetails(project: any) {
+  projectMoreDetails(project: ProjectModel) {
     this.showProjectMoreDetails = true
 
 
     console.log(project)
-    this.selProject = project 
+    this.selProject = { ...project }
+    this.selProjectTitle = project.name
   }
 
   closeProjectMoreDetails() {

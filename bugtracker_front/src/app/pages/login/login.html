@@ -3,13 +3,13 @@
         <h1 class="login-title">Login <span style="font-weight: 200;"> to your account! </span></h1>
         <div class="input-cont">
             <label>Email</label>
-            <input class="universal-inp-text" type="text" placeholder="Enter your email..." />
+            <input class="universal-inp-text" type="text" placeholder="Enter your email..." name="email" [(ngModel)]="loginData.Email"/>
         </div>
         <div class="input-cont">
             <label>Password</label>
-            <input class="universal-inp-text" type="password" />
+            <input class="universal-inp-text" type="password" name="password"  [(ngModel)]="loginData.Password"/>
         </div>
-        <button class="universal-btn login-btn" type="submit">Login</button>
+        <button class="universal-btn login-btn" type="button" (click)="handleLogin()">Login</button>
     </form>
     <span class="register-redirect">Don't have an account?
         <button type="button" [routerLink]="'/register'">Register!</button>

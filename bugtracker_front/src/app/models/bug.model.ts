@@ -1,24 +1,31 @@
 import { ProjectModel } from "./project.model";
 
-type Status = "fixed" | "active";
-type Severity = "Low" | "Moderate" | "Major" | "Critical";
-type Priority = "Low" | "Medium" | "High";
-type Platform = "Android" | "iOS" | "Web" | "Mobile Web";
-
 export interface BugModel {
     id: string;
     name: string;
     description: string;
 
-    dateAdded: Date;
-    dateFixed: Date;
+    dateAdded?: Date;
+    dateFixed?: Date;
 
-    status: Status;
-    severity: Severity;
-    priority: Priority;
-    platform: Platform;
+    status: string;
+    severity: string;
+    priority: string;
+    platform: string;
 
     project: ProjectModel;
 
     imageUrl: string;
+    ownerName: string;
+}
+
+
+
+export interface BugModelUpdate {
+    name?: string;
+    description?: string;
+    dateFixed?: Date;
+    severity?: string;
+    priority?: string;
+    platform?: string;
 }

@@ -1,15 +1,28 @@
 import { BugModel } from "./bug.model";
-import { ManagerModel } from "./manager.model";
 
-type Status = "Planning" | "Active" | "Blocked"
 
-export interface ProjectModel{
+export interface ProjectModel {
     id: number;
     name: string;
     description: string;
 
-    owner: ManagerModel;
+    ownerName: string;
 
-    status: Status;
+    status: string;
     bugs: BugModel[];
+    bugsSum?: BugSumModel[];
+    bugCount: number;
+}
+
+export interface AddProjectModel {
+    name: string;
+    description: string;
+    status: string;
+}
+
+export interface BugSumModel {
+    id: number;
+    name: string;
+    severity: string;
+    status: string;
 }
