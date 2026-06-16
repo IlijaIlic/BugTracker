@@ -2,7 +2,7 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Combobox } from '../../components/combobox/combobox';
 import { ActivatedRoute } from '@angular/router';
-import { forkJoin, switchMap } from 'rxjs';
+import { debounceTime, forkJoin, Subject, switchMap } from 'rxjs';
 import { ProjectService } from '../../services/project.service';
 import { ProjectModel } from '../../models/project.model';
 import { BugModel, BugModelUpdate } from '../../models/bug.model';
@@ -37,8 +37,9 @@ export class Bugs implements OnInit {
 
   protected project: ProjectModel | null = null;
   protected myBugs: BugModel[] | null = null;
+  protected allBugs: BugModel[] | null = null;
   protected newBug: BugModel = {
-    id: "",
+    id: -1,
     name: "",
     description: "",
     status: 'Active',
@@ -54,27 +55,48 @@ export class Bugs implements OnInit {
   protected selBugDate: string | null = null;
   protected selBugOriginalName: string = "";
 
+  protected searchSubject = new Subject<string>();
+  protected searchInput: string = ""
+
+  protected projectId: number = 0;
+
   ngOnInit(): void {
-    this.getAll()
+    this.searchSubject.pipe(
+      debounceTime(1000)
+    ).subscribe(search => {
+      console.log('debounced search fired:', search) // ← add this
+      this.bugService.getBugsByProject(this.projectId, search).subscribe({
+        next: (resp) => this.allBugs = resp,
+        error: (err) => console.log(err)
+      });
+    });
+
+    this.getAll();
   }
 
   getAll() {
     this.route.paramMap.pipe(
       switchMap(params => {
-        const bugId = Number(params.get('id'));
+        this.projectId = Number(params.get('id'));
         return forkJoin({
-          project: this.projectService.getById(bugId),
-          myBugs: this.bugService.getMyBugs(bugId)
+          project: this.projectService.getById(this.projectId),
+          allBugs: this.bugService.getBugsByProject(this.projectId, this.searchInput),
+          myBugs: this.bugService.getMyBugs(this.projectId)
         });
-      })).subscribe({
-        next: (resp) => {
-          this.project = resp.project
-          this.myBugs = resp.myBugs
-          console.log(this.project)
-        },
-        error: (err) => console.log(err)
-      }
-    )
+      })
+    ).subscribe({
+      next: (resp) => {
+        this.project = resp.project;
+        this.allBugs = resp.allBugs;
+        this.myBugs = resp.myBugs;
+      },
+      error: (err) => console.log(err)
+    });
+  }
+
+  onSearch() {
+    console.log(this.searchInput)
+    this.searchSubject.next(this.searchInput);
   }
 
   dateToReadable(date: any) {
@@ -99,7 +121,11 @@ export class Bugs implements OnInit {
     if (this.selectedFile) formData.append('Image', this.selectedFile);
 
     this.bugService.addBug(formData).subscribe({
-      next: (resp) => console.log(resp),
+      next: (resp) => {
+        console.log(resp)
+        this.closeSubmitBug()
+        this.getAll()
+      },
       error: (err) => console.log(err),
     })
   }
@@ -124,6 +150,16 @@ export class Bugs implements OnInit {
     })
   }
 
+  handleDeleteBug() {
+    this.bugService.deleteBug(this.selBug!.id).subscribe({
+      next: (resp) => {
+        console.log(resp)
+        this.closeBugMoreDetails()
+        this.getAll()
+      },
+      error: (err) => console.log(err)
+    })
+  }
 
   disableScroll() {
     document.body.classList.add('overflow-h')
@@ -152,6 +188,18 @@ export class Bugs implements OnInit {
     this.showSubmitBug = false
     this.previewUrl = null;
     this.selectedFile = null;
+    this.newBug = {
+      id: -1,
+      name: "",
+      description: "",
+      status: 'Active',
+      severity: 'Low',
+      priority: 'Low',
+      platform: 'Android',
+      project: this.project!,
+      imageUrl: "",
+      ownerName: ""
+    }
 
     this.enableScroll()
   }

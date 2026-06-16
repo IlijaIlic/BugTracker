@@ -31,7 +31,10 @@ export class Login implements OnInit {
         console.log(resp)
         this.router.navigate(['/projects'])
       },
-      error: (err) => console.log(err)
+      error: (err) => {
+        console.log(err)
+        alert("Login error: " + err.error);
+      }
     })
   }
 }

@@ -28,6 +28,8 @@ namespace bugtracker_back.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+
+
             var bugs = await _db.Bugs
                 .Select(b => new BugResponseDto
                 {
@@ -80,13 +82,17 @@ namespace bugtracker_back.Controllers
             return Ok(bug);
         }
 
-        // GET /api/bugs/project/5
         [HttpGet("project/{projectId}")]
-        public async Task<IActionResult> GetByProject(int projectId)
+        public async Task<IActionResult> GetByProject(int projectId, [FromQuery] string? search = null)
         {
+            Console.WriteLine($"projectId: {projectId}, search: '{search}'");
+            var query = _db.Bugs
+                .Where(b => b.ProjectId == projectId);
 
-            var bugs = await _db.Bugs
-                .Where(b => b.ProjectId == projectId)
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(b => b.Name.Contains(search));
+
+            var bugs = await query
                 .Select(b => new BugResponseDto
                 {
                     Id = b.Id,
@@ -105,6 +111,7 @@ namespace bugtracker_back.Controllers
                     OwnerName = b.Owner.UserName
                 })
                 .ToListAsync();
+            Console.WriteLine($"returned {bugs.Count} bugs"); // ← and this
 
             return Ok(bugs);
         }

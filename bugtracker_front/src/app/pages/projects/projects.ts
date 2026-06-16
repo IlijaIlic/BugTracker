@@ -4,6 +4,8 @@ import { Combobox } from '../../components/combobox/combobox';
 import { ProjectService } from '../../services/project.service';
 import { AddProjectModel, ProjectModel } from '../../models/project.model';
 import { Router } from '@angular/router';
+import { debounceTime, Subject } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-projects',
@@ -14,12 +16,15 @@ import { Router } from '@angular/router';
 export class Projects implements OnInit {
 
   protected projectService = inject(ProjectService);
+  protected authService = inject(AuthService);
   protected router = inject(Router);
 
   protected showYourProjects: boolean = false;
   protected showAddProject: boolean = false;
   protected showProjectMoreDetails: boolean = false;
 
+  protected searchSubject = new Subject<string>();
+  protected searchInput: string = ""
 
   protected addProject: AddProjectModel = {
     description: "",
@@ -33,12 +38,26 @@ export class Projects implements OnInit {
   protected selProject: ProjectModel | null = null
   protected selProjectTitle: string = ""
 
+
   ngOnInit(): void {
-    this.getProjects()
+    this.searchSubject.pipe(
+      debounceTime(1000)
+    ).subscribe(search => {
+      this.projectService.getAll(search).subscribe({
+        next: (resp) => this.projects = resp,
+        error: (err) => console.log(err)
+      });
+    });
+
+    this.getProjects();
+  }
+
+  onSearch() {
+    this.searchSubject.next(this.searchInput);
   }
 
   getProjects() {
-    this.projectService.getAll().subscribe({
+    this.projectService.getAll(this.searchInput).subscribe({
       next: (resp) => {
         this.projects = resp
         console.log(resp)
@@ -53,12 +72,20 @@ export class Projects implements OnInit {
       },
       error: (err) => console.log(err)
     })
+
   }
 
   handleAddProject() {
     this.projectService.addProject(this.addProject).subscribe({
-      next: (resp) => console.log(resp),
-      error: (err) => console.log(err)
+      next: (resp) => {
+        console.log(resp)
+        this.closeAddProject()
+        this.getProjects()
+      },
+      error: (err) => {
+        console.log(err)
+        alert(err.error)
+      }
     });
   }
 
@@ -69,14 +96,25 @@ export class Projects implements OnInit {
       status: this.selProject!.status,
     }
 
-    this.projectService.updateProject(updateData, this.selProject!  .id).subscribe({
+    this.projectService.updateProject(updateData, this.selProject!.id).subscribe({
       next: (resp) => {
         console.log(resp)
         this.getProjects()
-        this.closeProjectMoreDetails()  
+        this.closeProjectMoreDetails()
       },
       error: (err) => console.log(err)
     });
+  }
+
+  handleDeleteProject() {
+    this.projectService.deleteProject(this.selProject!.id).subscribe({
+      next: (resp) => {
+        console.log(resp)
+        this.closeProjectMoreDetails()
+        this.getProjects()
+      },
+      error: (resp) => console.log(resp)
+    })
   }
 
   handleProjectStatus(event: any) {

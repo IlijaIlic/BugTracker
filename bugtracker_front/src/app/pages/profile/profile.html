@@ -1,0 +1,144 @@
+<div class="profile-page">
+
+    @if(showMyProjects){
+    <div class="ybugs-modal">
+        <div class="modal-bck shadow">
+              <button class="x-btn align-end" (click)="closeMyProjects()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            <label>Projects</label>
+            <div class="table-cont">
+
+                <table class="projects-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Bugs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(proj of this.user?.projects; track $index){
+                        <tr (click)="handleNavigateToProject(proj)">
+                            <th>{{proj.id}}</th>
+                            <th>{{proj.name}}</th>
+                            <th>{{proj.status}}</th>
+                            <th>{{proj.bugCount}}</th>
+                        </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Total projects - {{this.user?.projects!.length}}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if(showMyBugs){
+    <div class="ybugs-modal">
+        <div class="modal-bck shadow">
+             <button class="x-btn align-end" (click)="closeMyBugs()">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </button>
+            <label>Bugs</label>
+            <div class="table-cont">
+                <table class="bugs-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>DateCreated</th>
+                            <th>Status</th>
+                            <th>Platform</th>
+                            <th>Priority</th>
+                            <th>Severity</th>
+                            <th>ProjectName</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(bug of this.user?.bugs; track $index){
+                        @if(bug.status == "Active"){
+                        <tr>
+                            <th>{{bug.id}}</th>
+                            <th>{{bug.name}}</th>
+                            <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
+                            <th>{{bug.status}}</th>
+                            <th>{{bug.platform}}</th>
+                            <th>{{bug.priority}}</th>
+                            <th>{{bug.severity}}</th>
+                            <th>{{bug.projectName}}</th>
+                        </tr>
+                        }
+                        @if (bug.status == "Fixed") {
+                        <tr class="fixed-bug">
+                            <th>{{bug.id}}</th>
+                            <th>{{bug.name}}</th>
+                            <th>{{bug.ownerName}}</th>
+                            <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
+                            <th>{{bug.status}}</th>
+                            <th>{{bug.platform}}</th>
+                            <th>{{bug.priority}}</th>
+                            <th>{{bug.severity}}</th>
+                            <th>{{bug.projectName}}</th>
+
+                        </tr>
+                        }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Total bugs - {{this.user?.bugs!.length}}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    }
+    <h1>{{this.user?.username}} <span style="font-weight: 200;">Profile</span></h1>
+    <h2>{{this.user?.role}}</h2>
+    <div class="information-cont shadow">
+        <div class="flex-row-profile">
+
+            <div class="flex-column">
+                <label>Username</label>
+                <input class="universal-inp-text" placeholder="Username" [(ngModel)]="this.editUser.username" />
+            </div>
+            <div class="flex-column">
+
+                <label>Email</label>
+                <input class="universal-inp-text" placeholder="Email" [(ngModel)]="this.editUser.email" />
+            </div>
+        </div>
+
+        <div class="flex-row-profile">
+            @if(role == "Manager"){
+            <button class="universal-btn" (click)="openMyProjects()">My Projects</button>
+            }
+            <button class="universal-btn" (click)="openMyBugs()">My Bugs</button>
+        </div>
+    </div>
+    <div class="flex-row-profile">
+        <button class="universal-btn" (click)="handleDeleteAccount()">Delete Account</button>
+        <button class="universal-btn" (click)="handleUpdateAccount()">Confirm Changes</button>
+    </div>
+</div>

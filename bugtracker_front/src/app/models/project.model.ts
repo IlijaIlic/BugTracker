@@ -9,7 +9,6 @@ export interface ProjectModel {
     ownerName: string;
 
     status: string;
-    bugs: BugModel[];
     bugsSum?: BugSumModel[];
     bugCount: number;
 }

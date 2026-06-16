@@ -51,7 +51,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Total projects - {{this.myBugs?.length}}</th>
+                            <th>Total bugs - {{this.myBugs?.length}}</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -133,7 +133,7 @@
 
             <div class="flex-row">
 
-                <div class="delete-btn-cont">
+                <div class="delete-btn-cont" (click)="handleDeleteBug()">
                     <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
                     <button class="delete-btn-text">DELETE</button>
                 </div>
@@ -268,7 +268,7 @@
 
 
     <div class="full-width">
-        <input type="text" class="search-input" placeholder="Search a bug based on its name..." />
+        <input type="text" class="search-input" placeholder="Search a bug based on its name..." [(ngModel)]="searchInput" (input)="onSearch()"/>
         <div class="table-click-text-2">For more details click on a bug...</div>
         <div class="table-cont ">
 
@@ -286,7 +286,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for(bug of this.project?.bugs; track $index){
+                    @for(bug of this.allBugs; track $index){
                     @if(bug.status == "Active"){
                     <tr (click)="bugMoreDetails(bug)">
                         <th>{{bug.id}}</th>
@@ -322,7 +322,7 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th>Total projects - {{this.project?.bugCount}}</th>
+                        <th>Total bugs - {{this.project?.bugCount}}</th>
                     </tr>
                 </tfoot>
             </table>

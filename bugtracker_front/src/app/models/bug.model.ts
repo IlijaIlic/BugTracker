@@ -1,7 +1,7 @@
 import { ProjectModel } from "./project.model";
 
 export interface BugModel {
-    id: string;
+    id: number;
     name: string;
     description: string;
 
@@ -17,6 +17,8 @@ export interface BugModel {
 
     imageUrl: string;
     ownerName: string;
+
+    projectName? : string;
 }
 
 

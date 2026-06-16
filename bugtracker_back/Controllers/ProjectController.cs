@@ -23,30 +23,47 @@ namespace bugtracker_back.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? search = null)
         {
-            var projects = await _db.Projects
-                .Include(p => p.Owner)
-                .Include(p => p.Bugs)
-                .Select(p => new ProjectResponseDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    OwnerId = p.OwnerId,
-                    OwnerName = p.Owner.UserName!,
-                    Status = p.Status,
-                    BugCount = p.Bugs == null ? 0 : p.Bugs.Count,
-                    Description = p.Description,
-                    BugsSum = p.Bugs == null ? new List<BugSummaryDto>()
-                        : p.Bugs.Select(b => new BugSummaryDto
-                        {
-                            Id = b.Id,
-                            Name = b.Name,
-                            Status = b.Status,
-                            Severity = b.Severity
-                        }).ToList()
-                }).ToListAsync();
+            var sw = System.Diagnostics.Stopwatch.StartNew();
 
+            var query = _db.Projects.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p => p.Name.Contains(search));
+
+            var raw = await query
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.OwnerId,
+                    OwnerName = p.Owner.UserName,
+                    p.Status,
+                    p.Description,
+                    Bugs = p.Bugs!.Select(b => new BugSummaryDto
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                        Status = b.Status,
+                        Severity = b.Severity
+                    }).ToList()
+                })
+                .ToListAsync();
+
+            var projects = raw.Select(p => new ProjectResponseDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                OwnerId = p.OwnerId,
+                OwnerName = p.OwnerName!,
+                Status = p.Status,
+                Description = p.Description,
+                BugsSum = p.Bugs,
+                BugCount = p.Bugs.Count
+            }).ToList();
+
+            Console.WriteLine($"GetAll took: {sw.ElapsedMilliseconds}ms");
             return Ok(projects);
         }
 
@@ -65,25 +82,7 @@ namespace bugtracker_back.Controllers
                     Description = p.Description,
                     OwnerName = p.Owner.UserName!,
                     Status = p.Status,
-                    BugCount = p.Bugs == null ? 0 : p.Bugs.Count,
-                    Bugs = p.Bugs == null ? new List<BugResponseDto>()
-                        : p.Bugs.Select(b => new BugResponseDto
-                        {
-                            Id = b.Id,
-                            Name = b.Name,
-                            Platform = b.Platform,
-                            Priority = b.Priority,
-                            Severity = b.Severity,
-                            Status = b.Status,
-                            Description = b.Description,
-                            ImageUrl = b.ImageUrl,
-                            ProjectId = b.ProjectId,
-                            ProjectName = b.Project.Name,
-                            DateAdded = b.DateAdded,
-                            DateFixed = b.DateFixed,
-                            OwnerId = b.OwnerId,
-                            OwnerName = b.Owner.UserName
-                        }).ToList()
+                    BugCount = p.Bugs == null ? 0 : p.Bugs.Count
                 }).FirstOrDefaultAsync();
 
             if (project == null)
@@ -95,33 +94,45 @@ namespace bugtracker_back.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> GetMyProjects()
         {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId is null)
                 return Unauthorized();
 
-            var projects = await _db.Projects
-                .Include(p => p.Owner)
-                .Include(p => p.Bugs)
+            var raw = await _db.Projects
                 .Where(p => p.OwnerId == userId)
-                .Select(p => new ProjectResponseDto
+                .Select(p => new
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    OwnerId = p.OwnerId,
-                    OwnerName = p.Owner.UserName!,
-                    Status = p.Status,
-                    BugCount = p.Bugs == null ? 0 : p.Bugs.Count,
-                    Description = p.Description,
-                    BugsSum = p.Bugs == null ? new List<BugSummaryDto>()
-                        : p.Bugs.Select(b => new BugSummaryDto
-                        {
-                            Id = b.Id,
-                            Name = b.Name,
-                            Status = b.Status,
-                            Severity = b.Severity
-                        }).ToList()
-                }).ToListAsync();
+                    p.Id,
+                    p.Name,
+                    p.OwnerId,
+                    OwnerName = p.Owner.UserName,
+                    p.Status,
+                    p.Description,
+                    Bugs = p.Bugs!.Select(b => new BugSummaryDto
+                    {
+                        Id = b.Id,
+                        Name = b.Name,
+                        Status = b.Status,
+                        Severity = b.Severity
+                    }).ToList()
+                })
+                .ToListAsync();
 
+            var projects = raw.Select(p => new ProjectResponseDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                OwnerId = p.OwnerId,
+                OwnerName = p.OwnerName!,
+                Status = p.Status,
+                Description = p.Description,
+                BugsSum = p.Bugs,
+                BugCount = p.Bugs.Count
+            }).ToList();
+
+            Console.WriteLine($"GetMine took: {sw.ElapsedMilliseconds}ms");
             return Ok(projects);
         }
 
@@ -140,7 +151,7 @@ namespace bugtracker_back.Controllers
                 OwnerId = userId,
                 Status = dto.Status,
                 Owner = null,
-                Description = dto.Description               
+                Description = dto.Description
             };
 
             _db.Projects.Add(project);

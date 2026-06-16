@@ -15,8 +15,11 @@ export class BugService {
         return this.http.post<BugModel[]>(`${this.apiUrl}`, data)
     }
 
-    getBugsByProject(id: number): Observable<Bugs[]> {
-        return this.http.get<Bugs[]>(`${this.apiUrl}/project/` + id)
+    getBugsByProject(id: number, search?: string): Observable<BugModel[]> {
+        let params: any = {};
+        if (search && search.trim() !== '') params['search'] = search;
+
+        return this.http.get<BugModel[]>(`${this.apiUrl}/project/${id}`, { params })
     }
 
     getMyBugs(id: number): Observable<BugModel[]> {
@@ -25,5 +28,9 @@ export class BugService {
 
     updateBug(data: any, id: number): Observable<BugModel> {
         return this.http.put<BugModel>(`${this.apiUrl}/` + id, data)
+    }
+
+    deleteBug(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/` + id)
     }
 }

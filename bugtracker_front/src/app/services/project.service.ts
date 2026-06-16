@@ -10,8 +10,9 @@ export class ProjectService {
     private http = inject(HttpClient);
     private apiUrl = 'https://localhost:7236/api/Project'
 
-    getAll(): Observable<ProjectModel[]> {
-        return this.http.get<ProjectModel[]>(`${this.apiUrl}`)
+    getAll(search?: string): Observable<ProjectModel[]> {
+        const params = search ? `?search=${search}` : '';
+        return this.http.get<ProjectModel[]>(`${this.apiUrl}${params}`)
     }
 
     getMine(): Observable<ProjectModel[]> {
@@ -28,5 +29,9 @@ export class ProjectService {
 
     updateProject(data: AddProjectModel, id: number): Observable<ProjectModel> {
         return this.http.put<ProjectModel>(`${this.apiUrl}/` + id, data)
+    }
+
+    deleteProject(id: number): Observable<any> {
+        return this.http.delete(`${this.apiUrl}/` + id)
     }
 }
