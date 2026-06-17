@@ -24,5 +24,17 @@ public class AppDbContext : IdentityDbContext<AppUser>
             .WithMany()
             .HasForeignKey(b => b.OwnerId)
             .OnDelete(DeleteBehavior.NoAction);
+
+        builder.Entity<Bug>()
+            .HasOne(b => b.Project)
+            .WithMany(p => p.Bugs)
+            .HasForeignKey(b => b.ProjectId)
+            .OnDelete(DeleteBehavior.NoAction); 
+
+        builder.Entity<Project>()
+            .HasOne(p => p.Owner)
+            .WithMany(m => m.Projects)
+            .HasForeignKey(p => p.OwnerId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -25,7 +25,6 @@ namespace bugtracker_back.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? search = null)
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             var query = _db.Projects.AsQueryable();
 
@@ -63,7 +62,6 @@ namespace bugtracker_back.Controllers
                 BugCount = p.Bugs.Count
             }).ToList();
 
-            Console.WriteLine($"GetAll took: {sw.ElapsedMilliseconds}ms");
             return Ok(projects);
         }
 
@@ -94,7 +92,6 @@ namespace bugtracker_back.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> GetMyProjects()
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId is null)
@@ -132,7 +129,6 @@ namespace bugtracker_back.Controllers
                 BugCount = p.Bugs.Count
             }).ToList();
 
-            Console.WriteLine($"GetMine took: {sw.ElapsedMilliseconds}ms");
             return Ok(projects);
         }
 
@@ -140,9 +136,16 @@ namespace bugtracker_back.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Create(CreateProjectDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest("Project name cannot be empty");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId is null)
                 return Unauthorized();
+
+            var managerExists = await _db.Users.AnyAsync(u => u.Id == userId);
+            if (!managerExists)
+                return BadRequest("Owner does not exist");
 
             var project = new Project
             {
@@ -164,6 +167,9 @@ namespace bugtracker_back.Controllers
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Update(int id, UpdateProjectDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest("Project name cannot be empty");
+
             var project = await _db.Projects.FindAsync(id);
             if (project is null)
                 return NotFound();
