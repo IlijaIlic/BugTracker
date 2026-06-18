@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 
@@ -436,12 +437,233 @@ namespace bugtracker_back.Tests
 
             var updateDto = new UpdateProjectDto { Name = "UPDATE", Status = ProjectStatus.Planning };
 
-            var result = _controller.Update(1, updateDto);
+            var result = await _controller.Update(1, updateDto);
             var updatedProject = _db.Projects.First();
 
             Assert.That(updatedProject.Name, Is.EqualTo("UPDATE"));
             Assert.That(updatedProject.Status, Is.EqualTo(ProjectStatus.Planning));
         }
+
+        [Test, Description("Update bi trebalo da vrati Forbid ako korisnik A pokusa da promeni projekat korisnika B")]
+        [Category("Update")]
+        public async Task Update_Forbid_wDifferentOwner()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var difManager = EntityCreation.CreateManager("2");
+            _db.Users.Add(difManager);
+
+            var project = EntityCreation.CreateProject(1, difManager);
+            _db.Projects.Add(project);
+
+            await _db.SaveChangesAsync();
+
+            var updateDto = new UpdateProjectDto { Name = "TEST", Status = ProjectStatus.Active };
+            var result = await _controller.Update(1, updateDto);
+
+            Assert.That(result, Is.TypeOf<ForbidResult>());
+        }
+
+        [Test, Description("Update bi trebalo da vrati BadRequest ako korisnik pokusa da proemni projekat nevalidnim podacima (prazno ime)")]
+        [Category("Update")]
+        public async Task Update_BadRequest_wNotValidData()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var manager = EntityCreation.CreateManager("1");
+            _db.Users.Add(manager);
+
+            var project = EntityCreation.CreateProject(1, manager);
+            _db.Projects.Add(project);
+
+            await _db.SaveChangesAsync();
+
+            var updateDto = new UpdateProjectDto { Name = "", Status = ProjectStatus.Active };
+            var result = await _controller.Update(1, updateDto);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
+
+        [Test, Description("Update bi trebalo da vrati NotFound ako korisnik pokusa da azurira nepostojeci projekat")]
+        [Category("Update")]
+        public async Task Update_NotFound_wNoProjects()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var manager = EntityCreation.CreateManager("1");
+            _db.Users.Add(manager);
+
+            await _db.SaveChangesAsync();
+
+            var updateDto = new UpdateProjectDto { Name = "TEST", Status = ProjectStatus.Active };
+            var result = await _controller.Update(1, updateDto);
+
+            Assert.That(result, Is.TypeOf<NotFoundResult>());
+        }
+
+        #endregion
+
+        #region DeleteTests
+
+        [Test, Description("Delete bi trebalo da obrise projekat koji je korisnik dodao")]
+        [Category("Delete")]
+        public async Task Delete_NoProject_AfterUserDeletesHisProject()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var manager = EntityCreation.CreateManager("1");
+            _db.Users.Add(manager);
+
+            var project = EntityCreation.CreateProject(1, manager);
+            _db.Projects.Add(project);
+
+            await _db.SaveChangesAsync();
+
+            await _controller.Delete(1);
+            var projectsInDb = _db.Projects.Any();
+
+            Assert.That(projectsInDb, Is.False);
+        }
+
+        [Test, Description("Delete bi trebalo da vrati Forbid ako korisnik pokusa da obrise tudji projekat")]
+        [Category("Delete")]
+        public async Task Delete_Forbid_UserTriesToDeleteSomeoneElsesProject()
+        {
+
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var difManager = EntityCreation.CreateManager("2");
+            _db.Users.Add(difManager);
+
+            var project = EntityCreation.CreateProject(1, difManager);
+            _db.Projects.Add(project);
+
+            await _db.SaveChangesAsync();
+
+            var result = await _controller.Delete(1);
+            var projectsInDb = _db.Projects.Any();
+
+            Assert.That(result, Is.TypeOf<ForbidResult>());
+            Assert.That(projectsInDb, Is.True);
+        }
+
+        [Test, Description("Delete bi trebalo da obrise samo projekat ciji se Id prosledi")]
+        [Category("Delete")]
+        public async Task Delete_DeletesJustOne()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var difManager = EntityCreation.CreateManager("1");
+            _db.Users.Add(difManager);
+
+            var project1 = EntityCreation.CreateProjectWData(1, difManager, "P1", "DESC", ProjectStatus.Active);
+            var project2 = EntityCreation.CreateProjectWData(2, difManager, "P2", "DESC", ProjectStatus.Active);
+            _db.Projects.AddRange(project1, project2);
+
+            await _db.SaveChangesAsync();
+
+            await _controller.Delete(1);
+
+            Assert.That(_db.Projects.Count(), Is.EqualTo(1));
+            Assert.That(_db.Projects.First().Name, Is.EqualTo("P2"));
+
+
+        }
+
+        [Test, Description("Delete bi trebalo da obrise i bugove koji se nalaze u projektu")]
+        [Category("Delete")]
+        public async Task Delete_BugsConnectedToProject()
+        {
+            var claims = new List<Claim> { new(ClaimTypes.NameIdentifier, "1") };
+            var identity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(identity);
+
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = claimsPrincipal
+                }
+            };
+
+            var manager = EntityCreation.CreateManager("1");
+            _db.Users.Add(manager);
+
+            var project = EntityCreation.CreateProject(1, manager);
+            _db.Projects.AddRange(project);
+
+            var bug1 = EntityCreation.CreateBug(1, project, manager);
+            var bug2 = EntityCreation.CreateBug(2, project, manager);
+            _db.Bugs.AddRange(bug1, bug2);
+
+            await _db.SaveChangesAsync();
+
+            await _controller.Delete(1);
+
+            Assert.That(_db.Projects.Any(), Is.False);
+            Assert.That(_db.Bugs.Any(), Is.False);
+        }
+
 
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using bugtracker_back.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -102,6 +103,24 @@ namespace bugtracker_back.Tests.Helper
             };
         }
 
+        public static Bug CreateBugWDateAdded(int id, Project project, AppUser owner, DateTime date, string name)
+        {
+            return new Bug
+            {
+                Id = id,
+                Name = name,
+                ProjectId = project.Id,
+                Project = project,
+                Status = BugStatus.Active,
+                Priority = Priority.Low,
+                Severity = Severity.Low,
+                Platform = Platform.Android,
+                Owner = owner,
+                OwnerId = owner.Id,
+                DateAdded = date
+            };
+        }
+
         public static Bug CreateBugWData(int id, Project project, AppUser owner, string name)
         {
             return new Bug
@@ -116,6 +135,56 @@ namespace bugtracker_back.Tests.Helper
                 Platform = Platform.Android,
                 Owner = owner,
                 OwnerId = owner.Id
+            };
+        }
+
+        public static Bug CreateCompleteBug(int id)
+        {
+            var owner = new Manager
+            {
+                Email = "test@gmail.com",
+                Id = $"{id}"
+            };
+
+            var project = new Project
+            {
+                Id = id,
+                Name = $"Project - {id}",
+                Description = $"Project Description - {id}",
+                OwnerId = owner.Id,
+                Owner = owner,
+                Status = ProjectStatus.Active,
+                Bugs = new List<Bug>()
+            };
+
+            var bug = new Bug
+            {
+                Id = id,
+                Name = $"Bug {id}",
+                ProjectId = id,
+                Project = project,
+                Status = BugStatus.Active,
+                Priority = Priority.Low,
+                Severity = Severity.Low,
+                Platform = Platform.Android,
+                Owner = owner,
+                OwnerId = owner.Id
+            };
+
+            project.Bugs.Add(bug);
+
+            return bug;
+        }
+
+        public static IFormFile CreateFakeFormFile(string fileName)
+        {
+            var bytes = Encoding.UTF8.GetBytes("abcd");
+            var stream = new MemoryStream(bytes);
+
+            return new FormFile(stream, 0, stream.Length, "Image", fileName)
+            {
+                Headers = new HeaderDictionary(),
+                ContentType = "image/png"
             };
         }
     }

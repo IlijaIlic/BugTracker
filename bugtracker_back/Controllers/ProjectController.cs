@@ -200,6 +200,9 @@ namespace bugtracker_back.Controllers
             if (project.OwnerId != userId)
                 return Forbid();
 
+            var projectBugs = await _db.Bugs.Where(b => b.ProjectId == id).ToListAsync();
+            _db.Bugs.RemoveRange(projectBugs);
+
             _db.Projects.Remove(project);
             await _db.SaveChangesAsync();
 

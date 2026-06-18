@@ -154,6 +154,9 @@ namespace bugtracker_back.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] CreateBugDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest("Bug name cannot be empty");
+
             var project = await _db.Projects.FindAsync(dto.ProjectId);
             if (project is null) return NotFound("Project not found");
 
@@ -192,6 +195,9 @@ namespace bugtracker_back.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateBugDto dto)
         {
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                return BadRequest("Bug name cannot be empty");
+
             var bug = await _db.Bugs.FindAsync(id);
             if (bug is null) return NotFound();
 
