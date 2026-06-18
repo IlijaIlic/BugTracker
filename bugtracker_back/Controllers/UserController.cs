@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace bugtracker_back.Controllers
@@ -95,6 +96,9 @@ namespace bugtracker_back.Controllers
         [HttpPut("me")]
         public async Task<IActionResult> UpdateMe(UpdateUserDto dto)
         {
+            if (!new EmailAddressAttribute().IsValid(dto.Email))
+                return BadRequest("Invalid email format");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId is null) return Unauthorized();
 

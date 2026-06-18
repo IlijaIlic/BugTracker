@@ -28,6 +28,16 @@ namespace bugtracker_back.Tests.Helper
             };
         }
 
+        public static Tester CreateTester(string id)
+        {
+            return new Tester
+            {
+                Id = id,
+                UserName = $"Tester - {id}",
+                Email = $"tester{id}@gmail.com"
+            };
+        }
+
         public static Project CreateProject(int id, Manager owner)
         {
             return new Project
