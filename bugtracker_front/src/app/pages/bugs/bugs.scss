@@ -433,6 +433,10 @@ tfoot {
     align-items: center;
 }
 
+.zhigh{
+    z-index: 2000;
+}
+
 .confirm-btn {
     background-color: #f58F7c;
     transition: 0.15s background-color ease-in-out, 0.15s scale ease-in-out;

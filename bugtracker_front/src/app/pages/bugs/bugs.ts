@@ -126,7 +126,9 @@ export class Bugs implements OnInit {
         this.closeSubmitBug()
         this.getAll()
       },
-      error: (err) => console.log(err),
+      error: (err) => {
+        alert(err.name)
+        console.log(err)},
     })
   }
 
@@ -146,18 +148,24 @@ export class Bugs implements OnInit {
         this.closeBugMoreDetails()
         this.getAll()
       },
-      error: (err) => console.log(err)
+      error: (err) =>{ console.log(err)
+        alert(err.name)
+      }
     })
   }
 
   handleDeleteBug() {
     this.bugService.deleteBug(this.selBug!.id).subscribe({
       next: (resp) => {
+        
         console.log(resp)
         this.closeBugMoreDetails()
         this.getAll()
       },
-      error: (err) => console.log(err)
+      error: (err) =>{ 
+        console.log(err)
+        alert(err.name)
+      }
     })
   }
 
@@ -206,6 +214,7 @@ export class Bugs implements OnInit {
 
   bugMoreDetails(bug: BugModel) {
     this.showBugMoreDetails = true
+       this.previewUrlEdit = null;
     this.disableScroll()
 
 

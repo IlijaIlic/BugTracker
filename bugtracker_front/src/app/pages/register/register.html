@@ -3,26 +3,26 @@
         <h1 class="register-title">Create <span style="font-weight: 200;"> new account! </span></h1>
         <div class="input-cont">
             <label>Username</label>
-            <input class="universal-inp-text" type="text" placeholder="JohnDoe123" [(ngModel)]="registerData.Username" name="Username"/>
+            <input data-testid="reg-username-inp" class="universal-inp-text" type="text" placeholder="JohnDoe123" [(ngModel)]="registerData.Username" name="Username"/>
         </div>
         <div class="input-cont">
             <label>Email</label>
-            <input class="universal-inp-text" type="text" placeholder="Enter your email..." [(ngModel)]="registerData.Email" name="Email"/>
+            <input data-testid="reg-email-inp" class="universal-inp-text" type="text" placeholder="Enter your email..." [(ngModel)]="registerData.Email" name="Email"/>
         </div>
         <div class="passwords">
             <div class="input-cont">
                 <label>Password</label>
-                <input class="universal-inp-text" type="password"[(ngModel)]="registerData.Password"  name="Password"/>
+                <input data-testid="reg-password1-inp" class="universal-inp-text" type="password"[(ngModel)]="registerData.Password"  name="Password"/>
             </div>
             <div class="input-cont">
                 <label>Repeat password</label>
-                <input class="universal-inp-text" type="password" [(ngModel)]="registerData.reppassword" name="reppassword"/>
+                <input data-testid="reg-password2-inp" class="universal-inp-text" type="password" [(ngModel)]="registerData.reppassword" name="reppassword"/>
             </div>
         </div>
-        <app-combobox [placeHolderText]="'Select your role...'" [options]="['Manager', 'Tester']" (chosenText)="this.registerData.Role = $event"/>
-        <button class="universal-btn register-btn" type="button" (click)="handleRegister()">Register</button>
+        <app-combobox data-testid="reg-role-cmb" [placeHolderText]="'Select your role...'" [options]="['Manager', 'Tester']" (chosenText)="this.registerData.Role = $event"/>
+        <button data-testid="reg-register-btn" class="universal-btn register-btn" type="button" (click)="handleRegister()">Register</button>
     </form>
     <span class="login-redirect">Already have an account?
-        <button type="button" [routerLink]="'/login'">Login!</button>
+        <button data-testid="reg-login-redirect-btn" type="button" [routerLink]="'/login'">Login!</button>
     </span>
 </div>

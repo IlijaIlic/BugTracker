@@ -1,11 +1,11 @@
 <div class="project-page">
     @if(this.showYourProjects){
-    <div class="yprojects-modal">
+    <div data-testid="proj-myprojects-div" class="yprojects-modal">
         <div class="modal-bck shadow">
 
             <div class="flex-row">
                 <div class="table-expl">Your Projects</div>
-                <button class="x-btn align-end" (click)="closeYourProjects()">
+                <button data-testid="myproj-close-btn" class="x-btn align-end" (click)="closeYourProjects()">
                     <span class="material-symbols-outlined">
                         cancel
                     </span>
@@ -14,7 +14,7 @@
             <div class="table-click-text">For more details click on your project...</div>
             <div class="table-cont">
 
-                <table class="modal-table">
+                <table data-testid="myproj-table" class="modal-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -51,37 +51,37 @@
     }
 
     @if(this.showAddProject){
-    <div class="add-p-cont">
+    <div data-testid="proj-addproject-div" class="add-p-cont">
         <div class="add-background shadow">
-            <button class="x-btn align-end margint-1" (click)="closeAddProject()"><span
+            <button data-testid="addproj-close-btn" class="x-btn align-end margint-1" (click)="closeAddProject()"><span
                     class="material-symbols-outlined">
                     cancel
                 </span></button>
             <div class="flex-column">
 
                 <label class="add-label">Project Name</label>
-                <input class="universal-inp-text" type="text" placeholder="Enter project name..."
+                <input data-testid="addproj-name-inp" class="universal-inp-text" type="text" placeholder="Enter project name..."
                     [(ngModel)]="this.addProject.name" />
             </div>
             <div class="flex-column">
                 <label class="add-label">Status</label>
-                <app-combobox [options]="['Planning', 'Active', 'Blocked']"
+                <app-combobox data-testid="addproj-status-cmb" [options]="['Planning', 'Active', 'Blocked']"
                     [placeHolderText]="'Select status of the project...'" (chosenText)="handleProjectStatus($event)" />
             </div>
             <div class="flex-column">
                 <label class="add-label">Description</label>
-                <textarea class="textarea-desc" [(ngModel)]="this.addProject.description"></textarea>
+                <textarea data-testid="addproj-desc-inp" class="textarea-desc" [(ngModel)]="this.addProject.description"></textarea>
             </div>
 
 
-            <button class="universal-btn accent-btn shadow align-end marginb-1" (click)="handleAddProject()">Create new
+            <button data-testid="addproj-submit-btn" class="universal-btn accent-btn shadow align-end marginb-1" (click)="handleAddProject()">Create new
                 project</button>
         </div>
     </div>
     }
 
     @if(this.showProjectMoreDetails){
-    <div class="pdetails-modal">
+    <div data-testid="proj-details-div" class="pdetails-modal">
 
         @if(selProject){
 
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="delete-btn-cont" (click)="handleDeleteProject()">
+            <div data-testid="details-delete-btn" class="delete-btn-cont" (click)="handleDeleteProject()">
                 <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
                 <button class="delete-btn-text">DELETE</button>
             </div>
@@ -129,7 +129,7 @@
         <div class="modal-dark shadow">
             <div class="x-btn-cont">
 
-                <button class="x-btn align-end" (click)="closeProjectMoreDetails()">
+                <button data-testid="details-close-btn" class="x-btn align-end" (click)="closeProjectMoreDetails()">
                     <span class="material-symbols-outlined">
                         cancel
                     </span>
@@ -140,23 +140,23 @@
                 <div class="flex-column">
 
                     <label class="add-label">Project Name</label>
-                    <input class="universal-inp-text" type="text" placeholder="Enter project name..."
+                    <input data-testid="details-name-inp" class="universal-inp-text" type="text" placeholder="Enter project name..."
                         [(ngModel)]="this.selProject.name" />
                 </div>
 
                 <div class="flex-column">
                     <label class="add-label">Status</label>
-                    <app-combobox [options]="['Planning', 'Active', 'Blocked']"
+                    <app-combobox data-testid="details-status-cmb" [options]="['Planning', 'Active', 'Blocked']"
                         [placeHolderText]="'Change status of the project...'"
                         (chosenText)="this.selProject.status = $event" [startText]="this.selProject.status" />
                 </div>
                 <div class="flex-column">
                     <label class="add-label">Description</label>
-                    <textarea class="textarea-desc-edit"
+                    <textarea data-testid="details-desc-inp" class="textarea-desc-edit"
                         [(ngModel)]="this.selProject.description">{{this.selProject.description}}</textarea>
                 </div>
             </div>
-            <div class="confirm-btn-cont align-end" (click)="handleEditProject()">
+            <div data-testid="details-submit-btn" class="confirm-btn-cont align-end" (click)="handleEditProject()">
                 <button class="confirm-btn-text">CONFIRM</button>
                 <button class="confirm-btn">
                     <span class="material-symbols-outlined">
@@ -176,7 +176,7 @@
             Available projects
         </div>
         @if(authService.currentUser()?.role == "Manager"){
-        <button class="universal-btn accent-btn shadow" (click)="openYourProjects()">
+        <button data-testid="proj-myprojects-btn" class="universal-btn accent-btn shadow" (click)="openYourProjects()">
             Your projects
             <span class="material-symbols-outlined">
                 assignment
@@ -184,12 +184,12 @@
         </button>
         }
     </div>
-    <input type="text" class="search-input" placeholder="Search a project based on its name..." (input)="onSearch()"
+    <input data-testid="proj-search-inp" type="text" class="search-input" placeholder="Search a project based on its name..." (input)="onSearch()"
         [(ngModel)]="searchInput" />
 
     <div class="table-cont">
 
-        <table class="projects-table">
+        <table class="projects-table" data-testid="proj-table">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -199,7 +199,7 @@
                     <th>Bugs</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody >
                 @for(proj of this.projects; track $index){
                 <tr (click)="handleNavigateToProject(proj)">
                     <th>{{proj.id}}</th>
@@ -222,7 +222,7 @@
         </table>
     </div>
     @if(authService.currentUser()?.role == "Manager"){
-    <button class="universal-btn accent-btn shadow center" (click)="this.openAddProject()">
+    <button data-testid="proj-addproject-btn" class="universal-btn accent-btn shadow center" (click)="this.openAddProject()">
         Create a new project
         <span class="material-symbols-outlined">add_2</span>
     </button>

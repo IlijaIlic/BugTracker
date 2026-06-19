@@ -80,6 +80,8 @@ e2e/*.map
 .DS_Store
 Thumbs.db
 
+bugtracker_back/wwwroot/uploads/
+
 ## Editors / IDEs
 .idea/
 .vscode/*

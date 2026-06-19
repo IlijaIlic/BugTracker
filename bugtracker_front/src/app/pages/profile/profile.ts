@@ -28,7 +28,6 @@ export class Profile implements OnInit {
     username: ""
   };
 
-  protected role = "Manager"
 
   ngOnInit(): void {
     if (this.authService.currentUser() == null) {
@@ -87,7 +86,10 @@ export class Profile implements OnInit {
         this.authService.logout()
         this.router.navigate(["/"])
       },
-      error: (err) => console.log(err)
+      error: (err) => {
+        alert(err)
+        console.log(err)
+      }
     })
   }
 

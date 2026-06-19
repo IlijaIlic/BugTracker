@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -56,9 +57,11 @@ namespace bugtracker_back.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
+            if (!new EmailAddressAttribute().IsValid(dto.Email))
+                return BadRequest("Invalid email format");
+
             if (dto.Role != "Manager" && dto.Role != "Tester")
                 return BadRequest("Role must be Manager or Tester");
-
 
             AppUser user = dto.Role == "Manager"
                 ? new Manager { UserName = dto.Username, Email = dto.Email }

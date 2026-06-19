@@ -102,7 +102,10 @@ export class Projects implements OnInit {
         this.getProjects()
         this.closeProjectMoreDetails()
       },
-      error: (err) => console.log(err)
+      error: (err) => {
+        alert(err)
+        console.log(err)
+      }
     });
   }
 
@@ -150,6 +153,11 @@ export class Projects implements OnInit {
 
   closeAddProject() {
     this.showAddProject = false;
+    this.addProject = {
+      description: "",
+      name: "",
+      status: "Active"
+    }
     this.enableScroll()
   }
 

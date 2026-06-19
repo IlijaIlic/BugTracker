@@ -30,14 +30,20 @@ export class Register implements OnInit {
   }
 
   handleRegister() {
-    if (this.registerData.Password != this.registerData.reppassword) return
+    if (this.registerData.Password != this.registerData.reppassword) {
+      alert("Passwords must match!")
+      return
+    }
 
     this.authService.register(this.registerData).subscribe({
       next: (resp) => {
         console.log(resp)
         this.router.navigate(["/projects"])
       },
-      error: (err) => console.log(err),
+      error: (err) => {
+        console.log(err)
+      alert(err);
+      },
     })
   }
 

@@ -1,7 +1,7 @@
 <div class="profile-page">
 
     @if(showMyProjects){
-    <div class="ybugs-modal">
+    <div data-testid="profile-myprojects-div" class="ybugs-modal">
         <div class="modal-bck shadow">
               <button class="x-btn align-end" (click)="closeMyProjects()">
                     <span class="material-symbols-outlined">
@@ -11,7 +11,7 @@
             <label>Projects</label>
             <div class="table-cont">
 
-                <table class="projects-table">
+                <table data-testid="myproj-table" class="projects-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -45,7 +45,7 @@
     }
 
     @if(showMyBugs){
-    <div class="ybugs-modal">
+    <div  data-testid="profile-mybugs-div" class="ybugs-modal">
         <div class="modal-bck shadow">
              <button class="x-btn align-end" (click)="closeMyBugs()">
                     <span class="material-symbols-outlined">
@@ -54,7 +54,7 @@
                 </button>
             <label>Bugs</label>
             <div class="table-cont">
-                <table class="bugs-table">
+                <table data-testid="mybugs-table" class="bugs-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -114,31 +114,31 @@
         </div>
     </div>
     }
-    <h1>{{this.user?.username}} <span style="font-weight: 200;">Profile</span></h1>
-    <h2>{{this.user?.role}}</h2>
+    <h1 data-testid="profile-username-lbl">{{this.user?.username}} <span style="font-weight: 200;">Profile</span></h1>
+    <h2 data-testid="profile-role-lbl">{{this.user?.role}}</h2>
     <div class="information-cont shadow">
         <div class="flex-row-profile">
 
             <div class="flex-column">
                 <label>Username</label>
-                <input class="universal-inp-text" placeholder="Username" [(ngModel)]="this.editUser.username" />
+                <input data-testid="profile-username-inp" class="universal-inp-text" placeholder="Username" [(ngModel)]="this.editUser.username" />
             </div>
             <div class="flex-column">
 
                 <label>Email</label>
-                <input class="universal-inp-text" placeholder="Email" [(ngModel)]="this.editUser.email" />
+                <input data-testid="profile-email-inp" class="universal-inp-text" placeholder="Email" [(ngModel)]="this.editUser.email" />
             </div>
         </div>
 
         <div class="flex-row-profile">
-            @if(role == "Manager"){
-            <button class="universal-btn" (click)="openMyProjects()">My Projects</button>
+            @if(this.user?.role == "Manager"){
+            <button data-testid="profile-myprojects-btn" class="universal-btn" (click)="openMyProjects()">My Projects</button>
             }
-            <button class="universal-btn" (click)="openMyBugs()">My Bugs</button>
+            <button data-testid="profile-mybugs-btn" class="universal-btn" (click)="openMyBugs()">My Bugs</button>
         </div>
     </div>
     <div class="flex-row-profile">
-        <button class="universal-btn" (click)="handleDeleteAccount()">Delete Account</button>
-        <button class="universal-btn" (click)="handleUpdateAccount()">Confirm Changes</button>
+        <button data-testid="profile-delete-btn" class="universal-btn" (click)="handleDeleteAccount()">Delete Account</button>
+        <button data-testid="profile-edit-btn" class="universal-btn" (click)="handleUpdateAccount()">Confirm Changes</button>
     </div>
 </div>

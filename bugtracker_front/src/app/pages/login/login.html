@@ -3,15 +3,15 @@
         <h1 class="login-title">Login <span style="font-weight: 200;"> to your account! </span></h1>
         <div class="input-cont">
             <label>Email</label>
-            <input class="universal-inp-text" type="text" placeholder="Enter your email..." name="email" [(ngModel)]="loginData.Email"/>
+            <input data-testid="log-email-inp" class="universal-inp-text" type="text" placeholder="Enter your email..." name="email" [(ngModel)]="loginData.Email"/>
         </div>
         <div class="input-cont">
             <label>Password</label>
-            <input class="universal-inp-text" type="password" name="password"  [(ngModel)]="loginData.Password"/>
+            <input data-testid="log-password-inp" class="universal-inp-text" type="password" name="password"  [(ngModel)]="loginData.Password"/>
         </div>
-        <button class="universal-btn login-btn" type="button" (click)="handleLogin()">Login</button>
+        <button data-testid="log-login-btn" class="universal-btn login-btn" type="button" (click)="handleLogin()">Login</button>
     </form>
     <span class="register-redirect">Don't have an account?
-        <button type="button" [routerLink]="'/register'">Register!</button>
+        <button data-testid="log-register-redirect-btn" type="button" [routerLink]="'/register'">Register!</button>
     </span>
 </div>

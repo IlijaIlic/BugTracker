@@ -1,6 +1,6 @@
 <div class="footer">
-    <h1>Hello <span style="font-weight: 300;">{{userName}}</span></h1>
+    <h1>Hello <span style="font-weight: 300;" data-testid="foot-username-lbl">{{userName}}</span></h1>
     @if(this.authService.currentUser()){
-        <button class="logout-btn" (click)="handleLogout()">Logout</button>
+        <button data-testid="foot-logout-btn" class="logout-btn" (click)="handleLogout()">Logout</button>
     }
 </div>
