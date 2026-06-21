@@ -12,8 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer("Server=localhost\\SQLINSTANCE;Database=BugTracker;Trusted_Connection=True;TrustServerCertificate=True"));
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=BugTracker;Trusted_Connection=True;TrustServerCertificate=True"));
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+}).AddEntityFrameworkStores<AppDbContext>();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);

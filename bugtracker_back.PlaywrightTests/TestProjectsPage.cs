@@ -86,6 +86,23 @@ namespace bugtracker_back.PlaywrightTests
             await Expect(Page.GetByTestId("proj-addproject-div")).ToBeHiddenAsync();
         }
 
+        public async Task AddBlockedProj(string projName)
+        {
+            await Expect(Page).ToHaveURLAsync($"{GlobalSetup.FrontendUrl}/projects");
+            await OpenAddProject();
+
+
+            await Page.GetByTestId("addproj-name-inp").FillAsync(projName);
+
+            await Page.GetByTestId("addproj-status-cmb").ClickAsync();
+            await Page.GetByTestId("addproj-status-cmb").GetByText("Planning").ClickAsync();
+
+
+            await Page.GetByTestId("addproj-submit-btn").ClickAsync();
+            await Expect(Page.GetByTestId("proj-addproject-div")).ToBeHiddenAsync();
+        }
+
+
         [Test]
         [Category("ProjectsPage")]
         public async Task ProjectPage_ManagerLoggedIn_HaveAddProjectAndMyProjectButtons()
@@ -176,6 +193,22 @@ namespace bugtracker_back.PlaywrightTests
 
         [Test]
         [Category("ProjectsPage")]
+        public async Task ProjectPage_OnBlockedProjectClick_DontRedirect()
+        {
+            var projName = $"TestName{Guid.NewGuid().ToString("N")[..8]}";
+
+            await Expect(Page).ToHaveURLAsync($"{GlobalSetup.FrontendUrl}/projects");
+            await AddBlockedProj(projName);
+
+            var projectRow = Page.GetByTestId("proj-table").Locator("tr", new() { HasText = projName });
+            await Expect(projectRow).ToHaveCountAsync(1);
+            await projectRow.ClickAsync();
+
+            await Expect(Page).ToHaveURLAsync($"{GlobalSetup.FrontendUrl}/projects");
+        }
+
+        [Test]
+        [Category("ProjectsPage")]
         public async Task ProjectPage_TesterOnProjectClick_RedirectToBugs()
         {
             var projName = $"TestName{Guid.NewGuid().ToString("N")[..8]}";
@@ -205,7 +238,7 @@ namespace bugtracker_back.PlaywrightTests
 
             await Page.GetByTestId("addproj-name-inp").FillAsync(projectName);
             await Page.GetByTestId("addproj-status-cmb").ClickAsync();
-            await Page.GetByTestId("addproj-status-cmb").GetByText("Planning").ClickAsync();
+            await Page.GetByTestId("addproj-status-cmb").GetByText("Active").ClickAsync();
             await Page.GetByTestId("addproj-desc-inp").FillAsync("TestDescription");
 
             await Page.GetByTestId("addproj-submit-btn").ClickAsync();
@@ -214,7 +247,7 @@ namespace bugtracker_back.PlaywrightTests
             var newRow = Page.GetByTestId("proj-table").Locator("tr", new() { HasText = projectName });
 
             await Expect(newRow).ToBeVisibleAsync();
-            await newRow.ClickAsync();
+            await newRow.ClickAsync(new (){Timeout = 3000});
 
             await Expect(Page).ToHaveURLAsync(new Regex($"^{GlobalSetup.FrontendUrl}/bug"));
             await Page.GetByTestId("bug-desc-btn").ClickAsync();

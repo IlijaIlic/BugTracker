@@ -56,20 +56,33 @@ namespace bugtracker_back.Tests
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
-        [Test, Description("Register bi trebalo da vrati BadRequest ako CreateAsync ne uspe (npr. nevalidan email, jednostavna sifra)")]
+        [Test, Description("Register bi trebalo da vrati BadRequest ako CreateAsync ne uspe (jednostavna sifra)")]
         [Category("Register")]
         public async Task Register_Error_wCreateAsyncFail()
         {
-            var errors = new[] { new IdentityError { Description = "Invalid email or weak password" } };
+            var errors = new[] { new IdentityError { Description = "Weak password" } };
             _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Failed(errors));
 
-            var dto = new RegisterDto { Username = "user1", Email = "asdfasdf", Password = "asdf", Role = "Tester" };
+            var dto = new RegisterDto { Username = "user1", Email = "user1@gmail.com", Password = "asdf", Role = "Tester" };
             var result = await _controller.Register(dto);
 
             Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
         }
 
+		[Test, Description("Register bi trebalo da vrati BadRequest ako je email nevalidan")]
+        [Category("Register")]
+        public async Task Register_Error_wInvalidEmail()
+        {
+            var errors = new[] { new IdentityError { Description = "Invalid email" } };
+            _userManagerMock.Setup(m => m.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed(errors));
+
+            var dto = new RegisterDto { Username = "user1", Email = "asdfasdf", Password = "Password123", Role = "Tester" };
+            var result = await _controller.Register(dto);
+
+            Assert.That(result, Is.TypeOf<BadRequestObjectResult>());
+        }
 
         [Test, Description("Register bi trebalo da sacuva novog korisnika")]
         [Category("Register")]
