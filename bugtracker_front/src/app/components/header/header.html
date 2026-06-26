@@ -1,8 +1,12 @@
 <header class="header">
-    <h1 routerLink="/">BugTracker</h1>
-    <div>
-        <button routerLink="/projects" class="universal-btn">Projects</button>
-        <button routerLink="/bugs" class="universal-btn">Bugs</button>
-        <button routerLink="/profile" class="universal-btn">Profile</button>
-    </div>
+  <h1 routerLink="/">BugTracker</h1>
+  <div class="btn-cont">
+    <button routerLink="/projects" class="universal-btn">Projects</button>
+    @if (userLogged()) {
+    <button routerLink="/profile" class="universal-btn profile-btn">
+      Profile
+      <span class="material-symbols-outlined"> account_circle </span>
+    </button>
+    }
+  </div>
 </header>

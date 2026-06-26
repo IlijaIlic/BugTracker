@@ -37,10 +37,22 @@ export class Projects implements OnInit {
   protected selProject: ProjectModel | null = null;
   protected selProjectTitle: string = '';
 
+  protected STATUS_ORDER: Record<string, number> = {
+    Active: 0,
+    Planning: 1,
+    Blocked: 2,
+  };
+
   ngOnInit(): void {
     this.searchSubject.pipe(debounceTime(1000)).subscribe((search) => {
       this.projectService.getAll(search).subscribe({
-        next: (resp) => (this.projects = resp),
+        next: (resp) =>
+          (this.projects = resp.sort((a, b) => {
+            return (
+              (this.STATUS_ORDER[a.status] ?? 99) -
+              (this.STATUS_ORDER[b.status] ?? 99)
+            );
+          })),
         error: (err) => console.log(err),
       });
     });
@@ -55,7 +67,12 @@ export class Projects implements OnInit {
   getProjects() {
     this.projectService.getAll(this.searchInput).subscribe({
       next: (resp) => {
-        this.projects = resp;
+        this.projects = resp.sort((a, b) => {
+          return (
+            (this.STATUS_ORDER[a.status] ?? 99) -
+            (this.STATUS_ORDER[b.status] ?? 99)
+          );
+        });
         console.log(resp);
       },
       error: (err) => console.log(err),
@@ -63,7 +80,12 @@ export class Projects implements OnInit {
 
     this.projectService.getMine().subscribe({
       next: (resp) => {
-        this.myProjects = resp;
+        this.myProjects = resp.sort((a, b) => {
+          return (
+            (this.STATUS_ORDER[a.status] ?? 99) -
+            (this.STATUS_ORDER[b.status] ?? 99)
+          );
+        });
         console.log(resp);
       },
       error: (err) => console.log(err),

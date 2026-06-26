@@ -1,17 +1,16 @@
 <div class="cmb-cont">
+  <button type="button" class="cmb" (click)="toggleOpenMenu()">
+    <p>{{displayedText ? displayedText : placeHolderText}}</p>
+    <span class="material-symbols-outlined">keyboard_double_arrow_down</span>
+  </button>
 
-    <button type="button" class="cmb" (click)="toggleOpenMenu()">
-        <p>{{displayedText ? displayedText : placeHolderText}}</p>
-        <span class="material-symbols-outlined">keyboard_double_arrow_down</span>
-    </button>
-
-    @if(this.showMenu){
-    <div class="menu-cont">
-        <ul>
-            @for(item of this.options; track $index){
-                <li><button type="button" (click)="setTextTo(item)">{{item}}</button></li>
-            }
-        </ul>
-    </div>
-    }
+  @if(this.showMenu){
+  <div class="menu-cont">
+    <ul>
+      @for(item of this.options; track $index){
+      <li><button type="button" (click)="setTextTo(item)">{{item}}</button></li>
+      }
+    </ul>
+  </div>
+  }
 </div>

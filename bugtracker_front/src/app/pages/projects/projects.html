@@ -1,230 +1,277 @@
 <div class="project-page">
-    @if(this.showYourProjects){
-    <div data-testid="proj-myprojects-div" class="yprojects-modal">
-        <div class="modal-bck shadow">
-
-            <div class="flex-row">
-                <div class="table-expl">Your Projects</div>
-                <button data-testid="myproj-close-btn" class="x-btn align-end" (click)="closeYourProjects()">
-                    <span class="material-symbols-outlined">
-                        cancel
-                    </span>
-                </button>
-            </div>
-            <div class="table-click-text">For more details click on your project...</div>
-            <div class="table-cont">
-
-                <table data-testid="myproj-table" class="modal-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Owner</th>
-                            <th>Status</th>
-                            <th>Bugs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(proj of this.myProjects; track $index){
-                        <tr (click)="projectMoreDetails(proj)">
-                            <th>{{proj.id}}</th>
-                            <th>{{proj.name}}</th>
-                            <th>{{proj.ownerName}}</th>
-                            <th>{{proj.status}}</th>
-                            <th>{{proj.bugCount}}</th>
-                        </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>Total projects - {{this.myProjects.length}}</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    </div>
-    }
-
-    @if(this.showAddProject){
-    <div data-testid="proj-addproject-div" class="add-p-cont">
-        <div class="add-background shadow">
-            <button data-testid="addproj-close-btn" class="x-btn align-end margint-1" (click)="closeAddProject()"><span
-                    class="material-symbols-outlined">
-                    cancel
-                </span></button>
-            <div class="flex-column">
-
-                <label class="add-label">Project Name</label>
-                <input data-testid="addproj-name-inp" class="universal-inp-text" type="text" placeholder="Enter project name..."
-                    [(ngModel)]="this.addProject.name" />
-            </div>
-            <div class="flex-column">
-                <label class="add-label">Status</label>
-                <app-combobox data-testid="addproj-status-cmb" [options]="['Planning', 'Active', 'Blocked']"
-                    [placeHolderText]="'Select status of the project...'" (chosenText)="handleProjectStatus($event)" />
-            </div>
-            <div class="flex-column">
-                <label class="add-label">Description</label>
-                <textarea data-testid="addproj-desc-inp" class="textarea-desc" [(ngModel)]="this.addProject.description"></textarea>
-            </div>
-
-
-            <button data-testid="addproj-submit-btn" class="universal-btn accent-btn shadow align-end marginb-1" (click)="handleAddProject()">Create new
-                project</button>
-        </div>
-    </div>
-    }
-
-    @if(this.showProjectMoreDetails){
-    <div data-testid="proj-details-div" class="pdetails-modal">
-
-        @if(selProject){
-
-        <!-- LIGHT PART -->
-        <div class="modal-light shadow">
-            <h1>Project - <span style="font-weight: 500;">{{this.selProjectTitle}} </span></h1>
-            <div>
-                <div>
-                    Current number of bugs: <span>{{this.selProject.bugCount}}</span>
-                </div>
-
-                <div class="table-cont">
-
-                    <table class="bugs-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Severity</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for(bug of this.selProject.bugsSum; track $index){
-                            <tr>
-                                <th>{{bug.id}}</th>
-                                <th>{{bug.name}}</th>
-                                <th>{{bug.severity}}</th>
-                                <th>{{bug.status}}</th>
-                            </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div data-testid="details-delete-btn" class="delete-btn-cont" (click)="handleDeleteProject()">
-                <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
-                <button class="delete-btn-text">DELETE</button>
-            </div>
-        </div>
-
-
-        <!-- DARK PART -->
-        <div class="modal-dark shadow">
-            <div class="x-btn-cont">
-
-                <button data-testid="details-close-btn" class="x-btn align-end" (click)="closeProjectMoreDetails()">
-                    <span class="material-symbols-outlined">
-                        cancel
-                    </span>
-                </button>
-            </div>
-            <div class="edit-cont">
-
-                <div class="flex-column">
-
-                    <label class="add-label">Project Name</label>
-                    <input data-testid="details-name-inp" class="universal-inp-text" type="text" placeholder="Enter project name..."
-                        [(ngModel)]="this.selProject.name" />
-                </div>
-
-                <div class="flex-column">
-                    <label class="add-label">Status</label>
-                    <app-combobox data-testid="details-status-cmb" [options]="['Planning', 'Active', 'Blocked']"
-                        [placeHolderText]="'Change status of the project...'"
-                        (chosenText)="this.selProject.status = $event" [startText]="this.selProject.status" />
-                </div>
-                <div class="flex-column">
-                    <label class="add-label">Description</label>
-                    <textarea data-testid="details-desc-inp" class="textarea-desc-edit"
-                        [(ngModel)]="this.selProject.description">{{this.selProject.description}}</textarea>
-                </div>
-            </div>
-            <div data-testid="details-submit-btn" class="confirm-btn-cont align-end" (click)="handleEditProject()">
-                <button class="confirm-btn-text">CONFIRM</button>
-                <button class="confirm-btn">
-                    <span class="material-symbols-outlined">
-                        check
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        }
-    </div>
-
-    }
-
-    <div class="flex-row">
-        <div class="project-title">
-            Available projects
-        </div>
-        @if(authService.currentUser()?.role == "Manager"){
-        <button data-testid="proj-myprojects-btn" class="universal-btn accent-btn shadow" (click)="openYourProjects()">
-            Your projects
-            <span class="material-symbols-outlined">
-                assignment
-            </span>
+  @if(this.showYourProjects){
+  <div data-testid="proj-myprojects-div" class="yprojects-modal">
+    <div class="modal-bck shadow">
+      <div class="flex-row">
+        <div class="table-expl">Your Projects</div>
+        <button
+          data-testid="myproj-close-btn"
+          class="x-btn align-end"
+          (click)="closeYourProjects()"
+        >
+          <span class="material-symbols-outlined"> cancel </span>
         </button>
-        }
-    </div>
-    <input data-testid="proj-search-inp" type="text" class="search-input" placeholder="Search a project based on its name..." (input)="onSearch()"
-        [(ngModel)]="searchInput" />
-
-    <div class="table-cont">
-
-        <table class="projects-table" data-testid="proj-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Owner</th>
-                    <th>Status</th>
-                    <th>Bugs</th>
-                </tr>
-            </thead>
-            <tbody >
-                @for(proj of this.projects; track $index){
-                <tr (click)="handleNavigateToProject(proj)">
-                    <th>{{proj.id}}</th>
-                    <th>{{proj.name}}</th>
-                    <th>{{proj.ownerName}}</th>
-                    <th>{{proj.status}}</th>
-                    <th>{{proj.bugCount}}</th>
-                </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Total projects - {{this.projects.length}}</th>
-                </tr>
-            </tfoot>
+      </div>
+      <div class="table-click-text">
+        For more details click on your project...
+      </div>
+      <div class="table-cont">
+        <table data-testid="myproj-table" class="modal-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>Status</th>
+              <th>Bugs</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(proj of this.myProjects; track $index){
+            <tr (click)="projectMoreDetails(proj)">
+              <th>{{proj.id}}</th>
+              <th>{{proj.name}}</th>
+              <th>{{proj.ownerName}}</th>
+              <th>{{proj.status}}</th>
+              <th>{{proj.bugCount}}</th>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>Total projects - {{this.myProjects.length}}</th>
+            </tr>
+          </tfoot>
         </table>
+      </div>
     </div>
+  </div>
+  } @if(this.showAddProject){
+  <div data-testid="proj-addproject-div" class="add-p-cont">
+    <div class="add-background shadow">
+      <button
+        data-testid="addproj-close-btn"
+        class="x-btn align-end margint-1"
+        (click)="closeAddProject()"
+      >
+        <span class="material-symbols-outlined"> cancel </span>
+      </button>
+      <div class="flex-column">
+        <label class="add-label">Project Name</label>
+        <input
+          data-testid="addproj-name-inp"
+          class="universal-inp-text"
+          type="text"
+          placeholder="Enter project name..."
+          [(ngModel)]="this.addProject.name"
+        />
+      </div>
+      <div class="flex-column">
+        <label class="add-label">Status</label>
+        <app-combobox
+          data-testid="addproj-status-cmb"
+          [options]="['Planning', 'Active', 'Blocked']"
+          [placeHolderText]="'Select status of the project...'"
+          (chosenText)="handleProjectStatus($event)"
+        />
+      </div>
+      <div class="flex-column">
+        <label class="add-label">Description</label>
+        <textarea
+          data-testid="addproj-desc-inp"
+          class="textarea-desc"
+          [(ngModel)]="this.addProject.description"
+        ></textarea>
+      </div>
+
+      <button
+        data-testid="addproj-submit-btn"
+        class="universal-btn accent-btn shadow align-end marginb-1"
+        (click)="handleAddProject()"
+      >
+        Create new project
+      </button>
+    </div>
+  </div>
+  } @if(this.showProjectMoreDetails){
+  <div data-testid="proj-details-div" class="pdetails-modal">
+    @if(selProject){
+
+    <!-- LIGHT PART -->
+    <div class="modal-light shadow">
+      <h1>
+        Project -
+        <span style="font-weight: 500">{{this.selProjectTitle}} </span>
+      </h1>
+      <div>
+        <div>
+          Current number of bugs: <span>{{this.selProject.bugCount}}</span>
+        </div>
+
+        <div class="table-cont">
+          <table class="bugs-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Severity</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(bug of this.selProject.bugsSum; track $index){
+              <tr>
+                <th>{{bug.id}}</th>
+                <th>{{bug.name}}</th>
+                <th>{{bug.severity}}</th>
+                <th>{{bug.status}}</th>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div
+        data-testid="details-delete-btn"
+        class="delete-btn-cont"
+        (click)="handleDeleteProject()"
+      >
+        <button class="delete-btn">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
+        <button class="delete-btn-text">DELETE</button>
+      </div>
+    </div>
+
+    <!-- DARK PART -->
+    <div class="modal-dark shadow">
+      <div class="x-btn-cont">
+        <button
+          data-testid="details-close-btn"
+          class="x-btn align-end"
+          (click)="closeProjectMoreDetails()"
+        >
+          <span class="material-symbols-outlined"> cancel </span>
+        </button>
+      </div>
+      <div class="edit-cont">
+        <div class="flex-column">
+          <label class="add-label">Project Name</label>
+          <input
+            data-testid="details-name-inp"
+            class="universal-inp-text"
+            type="text"
+            placeholder="Enter project name..."
+            [(ngModel)]="this.selProject.name"
+          />
+        </div>
+
+        <div class="flex-column">
+          <label class="add-label">Status</label>
+          <app-combobox
+            data-testid="details-status-cmb"
+            [options]="['Planning', 'Active', 'Blocked']"
+            [placeHolderText]="'Change status of the project...'"
+            (chosenText)="this.selProject.status = $event"
+            [startText]="this.selProject.status"
+          />
+        </div>
+        <div class="flex-column">
+          <label class="add-label">Description</label>
+          <textarea
+            data-testid="details-desc-inp"
+            class="textarea-desc-edit"
+            [(ngModel)]="this.selProject.description"
+          >
+{{this.selProject.description}}</textarea
+          >
+        </div>
+      </div>
+      <div
+        data-testid="details-submit-btn"
+        class="confirm-btn-cont align-end"
+        (click)="handleEditProject()"
+      >
+        <button class="confirm-btn-text">CONFIRM</button>
+        <button class="confirm-btn">
+          <span class="material-symbols-outlined"> check </span>
+        </button>
+      </div>
+    </div>
+
+    }
+  </div>
+
+  }
+
+  <div class="flex-row wrap">
+    <div class="project-title">Available projects</div>
     @if(authService.currentUser()?.role == "Manager"){
-    <button data-testid="proj-addproject-btn" class="universal-btn accent-btn shadow center" (click)="this.openAddProject()">
-        Create a new project
-        <span class="material-symbols-outlined">add_2</span>
+    <button
+      data-testid="proj-myprojects-btn"
+      class="universal-btn accent-btn shadow"
+      (click)="openYourProjects()"
+    >
+      Your projects
+      <span class="material-symbols-outlined"> assignment </span>
     </button>
     }
+  </div>
+  <input
+    data-testid="proj-search-inp"
+    type="text"
+    class="search-input"
+    placeholder="Search a project based on its name..."
+    (input)="onSearch()"
+    [(ngModel)]="searchInput"
+  />
+
+  <div class="table-cont">
+    <table class="projects-table" data-testid="proj-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Owner</th>
+          <th>Status</th>
+          <th>Bugs</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(proj of this.projects; track $index){
+        <tr (click)="handleNavigateToProject(proj)">
+          <th>{{proj.id}}</th>
+          <th>{{proj.name}}</th>
+          <th>{{proj.ownerName}}</th>
+          <th>{{proj.status}}</th>
+          <th>{{proj.bugCount}}</th>
+        </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>Total projects - {{this.projects.length}}</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  @if(authService.currentUser()?.role == "Manager"){
+  <button
+    data-testid="proj-addproject-btn"
+    class="universal-btn accent-btn shadow center"
+    (click)="this.openAddProject()"
+  >
+    Create a new project
+    <span class="material-symbols-outlined">add_2</span>
+  </button>
+  }
 </div>

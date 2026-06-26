@@ -60,9 +60,13 @@ export class Bugs implements OnInit {
 
   ngOnInit(): void {
     this.searchSubject.pipe(debounceTime(1000)).subscribe((search) => {
-      console.log('debounced search fired:', search); // ← add this
       this.bugService.getBugsByProject(this.projectId, search).subscribe({
-        next: (resp) => (this.allBugs = resp),
+        next: (resp) =>
+          (this.allBugs = resp.sort((a, b) => {
+            if (a.status == 'Fixed' && b.status == 'Active') return 1;
+            if (a.status == 'Active' && b.status == 'Fixed') return -1;
+            return 0;
+          })),
         error: (err) => console.log(err),
       });
     });
@@ -79,18 +83,26 @@ export class Bugs implements OnInit {
             project: this.projectService.getById(this.projectId),
             allBugs: this.bugService.getBugsByProject(
               this.projectId,
-              this.searchInput
+              this.searchInput,
             ),
             myBugs: this.bugService.getMyBugs(this.projectId),
           });
-        })
+        }),
       )
       .subscribe({
         next: (resp) => {
           if (resp.project.status == 'Active') {
             this.project = resp.project;
-            this.allBugs = resp.allBugs;
-            this.myBugs = resp.myBugs;
+            this.allBugs = resp.allBugs.sort((a, b) => {
+              if (a.status == 'Fixed' && b.status == 'Active') return 1;
+              if (a.status == 'Active' && b.status == 'Fixed') return -1;
+              return 0;
+            });
+            this.myBugs = resp.myBugs.sort((a, b) => {
+              if (a.status == 'Fixed' && b.status == 'Active') return 1;
+              if (a.status == 'Active' && b.status == 'Fixed') return -1;
+              return 0;
+            });
           } else {
             this.router.navigate(['/projects']);
           }
