@@ -1,336 +1,427 @@
 <div class="bugs-page">
+  @if(this.showYourBugs){
+  <div data-testid="bug-mybugs-div" class="ybugs-modal">
+    <div class="modal-bck shadow">
+      <div class="flex-row">
+        <div class="table-expl">Your Bugs</div>
+        <button
+          data-testid="mybugs-close-btn"
+          class="x-btn align-end"
+          (click)="closeYourBugsModal()"
+        >
+          <span class="material-symbols-outlined"> cancel </span>
+        </button>
+      </div>
+      <div class="table-click-text">For more details click on your bug...</div>
 
-    @if(this.showYourBugs){
-    <div data-testid="bug-mybugs-div" class="ybugs-modal">
-        <div class="modal-bck shadow">
-
-            <div class="flex-row">
-                <div  class="table-expl">Your Bugs</div>
-                <button data-testid="mybugs-close-btn" class="x-btn align-end" (click)="closeYourBugsModal()">
-                    <span class="material-symbols-outlined">
-                        cancel
-                    </span>
-                </button>
-            </div>
-            <div class="table-click-text">For more details click on your bug...</div>
-
-            <div class="table-cont">
-                <table data-testid="mybugs-table" class="modal-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Owner</th>
-                            <th>DateCreated</th>
-                            <th>Status</th>
-                            <th>Platform</th>
-                            <th>Priority</th>
-                            <th>Severity</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for(bug of this.myBugs; track $index){
-                        <tr (click)="bugMoreDetails(bug)">
-                            <th>{{bug.id}}</th>
-                            <th>{{bug.name}}</th>
-                            <th>{{bug.ownerName}}</th>
-                            <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
-                            <th>{{bug.status}}</th>
-                            <th>{{bug.platform}}</th>
-                            <th>{{bug.priority}}</th>
-                            <th>{{bug.severity}}</th>
-                        </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th>Total bugs - {{this.myBugs?.length}}</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
+      <div class="table-cont">
+        <table data-testid="mybugs-table" class="modal-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>DateCreated</th>
+              <th>Status</th>
+              <th>Platform</th>
+              <th>Priority</th>
+              <th>Severity</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(bug of this.myBugs; track $index){
+            <tr (click)="bugMoreDetails(bug)">
+              <th>{{bug.id}}</th>
+              <th>{{bug.name}}</th>
+              <th>{{bug.ownerName}}</th>
+              <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
+              <th>{{bug.status}}</th>
+              <th>{{bug.platform}}</th>
+              <th>{{bug.priority}}</th>
+              <th>{{bug.severity}}</th>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th>Total bugs - {{this.myBugs?.length}}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </div>
-    }
-
-    @if(this.showSubmitBug){
-    <div data-testid="bug-addbug-div" class="add-b-cont">
-        <div class="media-background">
-            <img class="upload-img" [src]="previewUrl || 'assets/noscreenshot.png'" alt="Uploaded picture" />
-            <button data-testid="addbug-img-btn" class="universal-btn accent-btn" (click)="fileInput.click()">Add a screenshot</button>
-            <input type="file" accept="image/*" style="display: none;" (change)="onFileSelected($event)" #fileInput />
-        </div>
-        <div class="add-background shadow">
-            <button data-testid="addbug-close-btn" class="x-btn align-end margint-1" (click)="closeSubmitBug()">
-                <span class="material-symbols-outlined">
-                    cancel
-                </span>
-            </button>
-            <div class="flex-column">
-
-                <label class="add-label">Bug title</label>
-                <input data-testid="addbug-name-inp" class="universal-inp-text" type="text" placeholder="Name your bug..."
-                    [(ngModel)]="this.newBug!.name" />
-            </div>
-
-            <div class="flex-column">
-                <label class="add-label">Platform</label>
-                <app-combobox data-testid="addbug-platform-cmb" [options]="['Android', 'iOS', 'Web', 'MobileWeb']"
-                    [placeHolderText]="'Select bug platform...'" />
-            </div>
-
-            <div class="flex-column">
-                <label class="add-label">Priority</label>
-                <app-combobox  data-testid="addbug-priority-cmb"  [options]="['Low', 'Medium', 'High']" [placeHolderText]="'Select bug priority...'" />
-            </div>
-
-            <div class="flex-column">
-                <label class="add-label">Severity</label>
-                <app-combobox  data-testid="addbug-severity-cmb" [options]="['Low', 'Moderate', 'Major', 'Critical']"
-                    [placeHolderText]="'Select bug severity...'" />
-            </div>
-
-            <div class="flex-column">
-                <label class="add-label">Description</label>
-                <textarea data-testid="addbug-description-inp" class="textarea-desc" [(ngModel)]="this.newBug!.description"></textarea>
-            </div>
-
-            <button data-testid="addbug-submit-btn" class="universal-btn accent-btn shadow align-end marginb-1" (click)="handleSubmitBug()">Submit a
-                bug</button>
-        </div>
-
+  </div>
+  } @if(this.showSubmitBug){
+  <div data-testid="bug-addbug-div" class="add-b-cont">
+    <div class="media-background">
+      <img
+        class="upload-img"
+        [src]="previewUrl || 'assets/noscreenshot.png'"
+        alt="Uploaded picture"
+      />
+      <button
+        data-testid="addbug-img-btn"
+        class="universal-btn accent-btn"
+        (click)="fileInput.click()"
+      >
+        Add a screenshot
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        style="display: none"
+        (change)="onFileSelected($event)"
+        #fileInput
+      />
     </div>
-    }
+    <div class="add-background shadow">
+      <button
+        data-testid="addbug-close-btn"
+        class="x-btn align-end margint-1"
+        (click)="closeSubmitBug()"
+      >
+        <span class="material-symbols-outlined"> cancel </span>
+      </button>
+      <div class="flex-column">
+        <label class="add-label">Bug title</label>
+        <input
+          data-testid="addbug-name-inp"
+          class="universal-inp-text"
+          type="text"
+          placeholder="Name your bug..."
+          [(ngModel)]="this.newBug!.name"
+        />
+      </div>
 
-    @if(this.showBugMoreDetails){
-    <div data-testid="bug-details-div" class="bdetails-modal">
+      <div class="flex-column">
+        <label class="add-label">Platform</label>
+        <app-combobox
+          data-testid="addbug-platform-cmb"
+          [options]="['Android', 'iOS', 'Web', 'MobileWeb']"
+          [placeHolderText]="'Select bug platform...'"
+        />
+      </div>
 
-        @if(selBug){
+      <div class="flex-column">
+        <label class="add-label">Priority</label>
+        <app-combobox
+          data-testid="addbug-priority-cmb"
+          [options]="['Low', 'Medium', 'High']"
+          [placeHolderText]="'Select bug priority...'"
+        />
+      </div>
 
-        <!-- LIGHT PART -->
-        <div class="modal-light shadow">
-            <h1>Bug - <span style="font-weight: 500;">{{this.selBugOriginalName}}</span></h1>
+      <div class="flex-column">
+        <label class="add-label">Severity</label>
+        <app-combobox
+          data-testid="addbug-severity-cmb"
+          [options]="['Low', 'Moderate', 'Major', 'Critical']"
+          [placeHolderText]="'Select bug severity...'"
+        />
+      </div>
 
-            <div class="desc-cont">
-                <label class="add-label-light">Description</label>
-                <textarea data-testid="details-description-inp" class="textarea-desc-edit"
-                    [(ngModel)]="this.selBug.description">{{this.selBug.description}}</textarea>
-            </div>
+      <div class="flex-column">
+        <label class="add-label">Description</label>
+        <textarea
+          data-testid="addbug-description-inp"
+          class="textarea-desc"
+          [(ngModel)]="this.newBug!.description"
+        ></textarea>
+      </div>
 
-            <!-- <div class="flex-column">
+      <button
+        data-testid="addbug-submit-btn"
+        class="universal-btn accent-btn shadow align-end marginb-1"
+        (click)="handleSubmitBug()"
+      >
+        Submit a bug
+      </button>
+    </div>
+  </div>
+  } @if(this.showBugMoreDetails){
+  <div data-testid="bug-details-div" class="bdetails-modal">
+    @if(selBug){
+
+    <!-- LIGHT PART -->
+    <div class="modal-light shadow">
+      <h1>
+        Bug - <span style="font-weight: 500">{{this.selBugOriginalName}}</span>
+      </h1>
+
+      <div class="desc-cont">
+        <label class="add-label-light">Description</label>
+        <textarea
+          data-testid="details-description-inp"
+          class="textarea-desc-edit"
+          [(ngModel)]="this.selBug.description"
+        >
+{{this.selBug.description}}</textarea
+        >
+
+        <!-- <div class="flex-column">
                     <img class="upload-img" [src]="previewUrlEdit || 'assets/noscreenshot.png'" alt="Uploaded picture" />
                     <button class="universal-btn accent-btn" (click)="fileInput.click()">Change a screenshot</button>
                     <input type="file" accept="image/*" style="display: none;" (change)="onFileSelectedEdit($event)"
                     #fileInput />
             </div> -->
 
-            <div class="flex-row">
-
-                <div data-testid="details-delete-btn" class="delete-btn-cont" (click)="handleDeleteBug()">
-                    <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
-                    <button class="delete-btn-text">DELETE</button>
-                </div>
-                <div data-testid="details-image-btn" class="confirm-btn-cont" (click)="openBugImage()">
-                    <button class="confirm-btn"><span class="material-symbols-outlined">image</span></button>
-                    <button class="confirm-btn-text">SCREENSHOT</button>
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- DARK PART -->
-        <div class="modal-dark shadow">
-            <div class="x-btn-cont">
-
-                <button class="x-btn align-end" (click)="closeBugMoreDetails()">
-                    <span class="material-symbols-outlined">
-                        cancel
-                    </span>
-                </button>
-            </div>
-            <div class="edit-cont">
-
-                <div class="flex-column">
-
-                    <label class="add-label">Bug Name</label>
-                    <input data-testid="details-name-inp" class="universal-inp-text" type="text" placeholder="Enter project name..."
-                        [(ngModel)]="this.selBug.name" />
-                </div>
-
-                <div class="flex-column">
-                    <label class="add-label">Platform</label>
-                    <app-combobox data-testid="details-platform-cmb" [options]="['Android', 'iOS', 'Web', 'MobileWeb']"
-                        [placeHolderText]="'Select bug platform...'" [startText]="this.selBug.platform"
-                        (chosenText)="this.selBug.platform = $event" />
-                </div>
-
-                <div class="flex-column">
-                    <label class="add-label">Priority</label>
-                    <app-combobox data-testid="details-priority-cmb" [options]="['Low', 'Medium', 'High']" [placeHolderText]="'Select bug priority...'"
-                        [startText]="this.selBug.priority" (chosenText)="this.selBug.priority = $event" />
-                </div>
-
-                <div class="flex-column">
-                    <label class="add-label">Severity</label>
-                    <app-combobox data-testid="details-severity-cmb" [options]="['Low', 'Moderate', 'Major', 'Critical']"
-                        [placeHolderText]="'Select bug severity...'" [startText]="this.selBug.severity"
-                        (chosenText)="this.selBug.severity = $event" />
-                </div>
-
-                <div class="flex-column">
-                    <label class="add-label">Bug resolved - date</label>
-                    <input data-testid="details-fixed-date" type="date" class="date" [(ngModel)]="this.selBugDate" />
-                </div>
-
-
-
-            </div>
-            <div data-testid="details-submit-btn" class="confirm-btn-cont align-end" (click)="handleUpdate()">
-                <button class="confirm-btn-text">CONFIRM</button>
-                <button class="confirm-btn">
-                    <span class="material-symbols-outlined">
-                        check
-                    </span>
-                </button>
-            </div>
-        </div>
-
-        }
-    </div>
-
-    }
-
-    @if(this.showBugImage){
-    <div data-testid="bug-image-div" class="ybugs-modal zhigh">
-        <div class="modal-bck shadow">
-            <button data-testid="image-close-btn" class="x-btn align-end " (click)="closeBugImage()">
-                <span class="material-symbols-outlined">
-                    cancel
-                </span>
+        <div class="flex-row">
+          <div
+            data-testid="details-delete-btn"
+            class="delete-btn-cont"
+            (click)="handleDeleteBug()"
+          >
+            <button class="delete-btn">
+              <span class="material-symbols-outlined">delete</span>
             </button>
-            <div class="flex-column-img">
-                <img class="upload-img" [src]="previewUrlEdit || this.imageApi + this.selBug?.imageUrl"
-                    alt="Uploaded picture" />
-                <button data-testid="image-change-btn" class="universal-btn accent-btn" (click)="fileInput.click()">Change a screenshot</button>
-                <input type="file" accept="image/*" style="display: none;" (change)="onFileSelectedEdit($event)"
-                    #fileInput />
-            </div>
+            <button class="delete-btn-text">DELETE</button>
+          </div>
+          <div
+            data-testid="details-image-btn"
+            class="confirm-btn-cont"
+            (click)="openBugImage()"
+          >
+            <button class="confirm-btn">
+              <span class="material-symbols-outlined">image</span>
+            </button>
+            <button class="confirm-btn-text">SCREENSHOT</button>
+          </div>
         </div>
+      </div>
     </div>
 
-    }
-
-    @if(this.showProjectDesc){
-    <div data-testid="bug-desc-div" class="ybugs-modal">
-        <div class="modal-bck shadow">
-            <div class="flex-row">
-                <div class="table-expl">Project Description</div>
-                <button data-testid="desc-close-btn" class="x-btn align-end" (click)="closeProjectDesc()">
-                    <span class="material-symbols-outlined">
-                        cancel
-                    </span>
-                </button>
-            </div>
-
-            <p class="project-description">
-                {{this.project?.description}}
-            </p>
-        </div>
-    </div>
-    }
-
-    <div class="flex-row">
-        <div class="bugs-title">
-            Bugs for project -
-            <span>
-                <button data-testid="bug-desc-btn" class="desc-button" style="font-weight: 600;" (click)="openProjectDesc()">{{this.project?.name}}
-                    <span class="material-symbols-outlined">
-                        description
-                    </span>
-                </button>
-            </span>
-        </div>
-        <button data-testid="bug-mybugs-btn" class="universal-btn accent-btn shadow" (click)="openYourBugsModal()">
-            Bugs you submitted
-            <span class="material-symbols-outlined">
-                assignment
-            </span>
+    <!-- DARK PART -->
+    <div class="modal-dark shadow">
+      <div class="x-btn-cont">
+        <button class="x-btn align-end" (click)="closeBugMoreDetails()">
+          <span class="material-symbols-outlined"> cancel </span>
         </button>
-    </div>
-
-
-    <div class="full-width">
-        <input data-testid="bug-search-inp" type="text" class="search-input" placeholder="Search a bug based on its name..." [(ngModel)]="searchInput" (input)="onSearch()"/>
-        <div class="table-click-text-2">For more details click on a bug...</div>
-        <div class="table-cont ">
-
-            <table data-testid="bug-table" class="bugs-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Owner</th>
-                        <th>DateCreated</th>
-                        <th>Status</th>
-                        <th>Platform</th>
-                        <th>Priority</th>
-                        <th>Severity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for(bug of this.allBugs; track $index){
-                    @if(bug.status == "Active"){
-                    <tr (click)="bugMoreDetails(bug)">
-                        <th>{{bug.id}}</th>
-                        <th>{{bug.name}}</th>
-                        <th>{{bug.ownerName}}</th>
-                        <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
-                        <th>{{bug.status}}</th>
-                        <th>{{bug.platform}}</th>
-                        <th>{{bug.priority}}</th>
-                        <th>{{bug.severity}}</th>
-                    </tr>
-                    }
-                    @if (bug.status == "Fixed") {
-                    <tr class="fixed-bug" (click)="bugMoreDetails(bug)">
-                        <th>{{bug.id}}</th>
-                        <th>{{bug.name}}</th>
-                        <th>{{bug.ownerName}}</th>
-                        <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
-                        <th>{{bug.status}}</th>
-                        <th>{{bug.platform}}</th>
-                        <th>{{bug.priority}}</th>
-                        <th>{{bug.severity}}</th>
-                    </tr>
-                    }
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th>Total bugs - {{this.project?.bugCount}}</th>
-                    </tr>
-                </tfoot>
-            </table>
+      </div>
+      <div class="edit-cont">
+        <div class="flex-column">
+          <label class="add-label">Bug Name</label>
+          <input
+            data-testid="details-name-inp"
+            class="universal-inp-text"
+            type="text"
+            placeholder="Enter project name..."
+            [(ngModel)]="this.selBug.name"
+          />
         </div>
-    </div>
-    <button data-testid="bug-addbug-btn" class="universal-btn accent-btn shadow center" (click)="openSubmitBug()">
-        Submit a new bug
-        <span class="material-symbols-outlined">add_2</span>
-    </button>
 
+        <div class="flex-column">
+          <label class="add-label">Platform</label>
+          <app-combobox
+            data-testid="details-platform-cmb"
+            [options]="['Android', 'iOS', 'Web', 'MobileWeb']"
+            [placeHolderText]="'Select bug platform...'"
+            [startText]="this.selBug.platform"
+            (chosenText)="this.selBug.platform = $event"
+          />
+        </div>
+
+        <div class="flex-column">
+          <label class="add-label">Priority</label>
+          <app-combobox
+            data-testid="details-priority-cmb"
+            [options]="['Low', 'Medium', 'High']"
+            [placeHolderText]="'Select bug priority...'"
+            [startText]="this.selBug.priority"
+            (chosenText)="this.selBug.priority = $event"
+          />
+        </div>
+
+        <div class="flex-column">
+          <label class="add-label">Severity</label>
+          <app-combobox
+            data-testid="details-severity-cmb"
+            [options]="['Low', 'Moderate', 'Major', 'Critical']"
+            [placeHolderText]="'Select bug severity...'"
+            [startText]="this.selBug.severity"
+            (chosenText)="this.selBug.severity = $event"
+          />
+        </div>
+
+        <div class="flex-column">
+          <label class="add-label">Bug resolved - date</label>
+          <input
+            data-testid="details-fixed-date"
+            type="date"
+            class="date"
+            [(ngModel)]="this.selBugDate"
+          />
+        </div>
+      </div>
+      <div
+        data-testid="details-submit-btn"
+        class="confirm-btn-cont align-end"
+        (click)="handleUpdate()"
+      >
+        <button class="confirm-btn-text">CONFIRM</button>
+        <button class="confirm-btn">
+          <span class="material-symbols-outlined"> check </span>
+        </button>
+      </div>
+    </div>
+
+    }
+  </div>
+
+  } @if(this.showBugImage){
+  <div data-testid="bug-image-div" class="ybugs-modal zhigh">
+    <div class="modal-bck shadow">
+      <button
+        data-testid="image-close-btn"
+        class="x-btn align-end"
+        (click)="closeBugImage()"
+      >
+        <span class="material-symbols-outlined"> cancel </span>
+      </button>
+      <div class="flex-column-img">
+        <img
+          class="upload-img"
+          [src]="previewUrlEdit || this.imageApi + this.selBug?.imageUrl"
+          alt="Uploaded picture"
+        />
+        <button
+          data-testid="image-change-btn"
+          class="universal-btn accent-btn"
+          (click)="fileInput.click()"
+        >
+          Change a screenshot
+        </button>
+        <input
+          type="file"
+          accept="image/*"
+          style="display: none"
+          (change)="onFileSelectedEdit($event)"
+          #fileInput
+        />
+      </div>
+    </div>
+  </div>
+
+  } @if(this.showProjectDesc){
+  <div data-testid="bug-desc-div" class="ybugs-modal">
+    <div class="modal-bck shadow">
+      <div class="flex-row">
+        <div class="table-expl">Project Description</div>
+        <button
+          data-testid="desc-close-btn"
+          class="x-btn align-end"
+          (click)="closeProjectDesc()"
+        >
+          <span class="material-symbols-outlined"> cancel </span>
+        </button>
+      </div>
+
+      <p class="project-description">{{this.project?.description}}</p>
+    </div>
+  </div>
+  }
+
+  <div class="flex-row wrap">
+    <div class="bugs-title">
+      Bugs for project -
+      <span>
+        <button
+          data-testid="bug-desc-btn"
+          class="desc-button"
+          style="font-weight: 600"
+          (click)="openProjectDesc()"
+        >
+          {{this.project?.name}}
+          <span class="material-symbols-outlined"> description </span>
+        </button>
+      </span>
+    </div>
+    <button
+      data-testid="bug-mybugs-btn"
+      class="universal-btn accent-btn shadow"
+      (click)="openYourBugsModal()"
+    >
+      Bugs you submitted
+      <span class="material-symbols-outlined"> assignment </span>
+    </button>
+  </div>
+
+  <div class="full-width">
+    <input
+      data-testid="bug-search-inp"
+      type="text"
+      class="search-input"
+      placeholder="Search a bug based on its name..."
+      [(ngModel)]="searchInput"
+      (input)="onSearch()"
+    />
+    <div class="table-click-text-2">For more details click on a bug...</div>
+    <div class="table-cont">
+      <table data-testid="bug-table" class="bugs-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>DateCreated</th>
+            <th>Status</th>
+            <th>Platform</th>
+            <th>Priority</th>
+            <th>Severity</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(bug of this.allBugs; track $index){ @if(bug.status == "Active"){
+          <tr (click)="bugMoreDetails(bug)">
+            <th>{{bug.id}}</th>
+            <th>{{bug.name}}</th>
+            <th>{{bug.ownerName}}</th>
+            <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
+            <th>{{bug.status}}</th>
+            <th>{{bug.platform}}</th>
+            <th>{{bug.priority}}</th>
+            <th>{{bug.severity}}</th>
+          </tr>
+          } @if (bug.status == "Fixed") {
+          <tr class="fixed-bug" (click)="bugMoreDetails(bug)">
+            <th>{{bug.id}}</th>
+            <th>{{bug.name}}</th>
+            <th>{{bug.ownerName}}</th>
+            <th>{{this.dateToReadable(bug.dateAdded!)}}</th>
+            <th>{{bug.status}}</th>
+            <th>{{bug.platform}}</th>
+            <th>{{bug.priority}}</th>
+            <th>{{bug.severity}}</th>
+          </tr>
+          } }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total bugs - {{this.project?.bugCount}}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <button
+    data-testid="bug-addbug-btn"
+    class="universal-btn accent-btn shadow center"
+    (click)="openSubmitBug()"
+  >
+    Submit a new bug
+    <span class="material-symbols-outlined">add_2</span>
+  </button>
 </div>

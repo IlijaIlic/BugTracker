@@ -50,18 +50,6 @@ tbody {
   }
 }
 
-thead {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-tfoot {
-  position: sticky;
-  bottom: 0;
-  z-index: 2;
-}
-
 .table-cont {
   width: 100%;
   max-height: 30rem;
@@ -126,6 +114,7 @@ tfoot {
 
   thead,
   tfoot {
+    position: sticky;
     tr {
       background-color: #d6d6d6;
 
@@ -378,7 +367,7 @@ tfoot {
   transition:
     0.15s background-color ease-in-out,
     0.15s scale ease-in-out;
-  color: #2c2b30;
+  color: #ffffff;
   border: none;
   border-radius: 2rem;
   padding: 0.5rem 1rem;
@@ -388,7 +377,7 @@ tfoot {
 
 .confirm-btn-text {
   background-color: #0f29bb;
-  color: #2c2b30;
+  color: white;
   border-radius: 2rem 0rem 0rem 2rem;
   border: none;
   padding: 0.5rem;
@@ -413,6 +402,18 @@ tfoot {
   scale: 1.05;
   background-color: #0f29bb;
   cursor: pointer;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+tfoot {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
 }
 
 @media screen and (width < 600px) {
@@ -468,30 +469,44 @@ tfoot {
   .pdetails-modal {
     width: 100%;
     height: 100%;
-    flex-direction: column;
+    flex-direction: column-reverse;
     padding-top: 0rem;
-    background-color: transparent;
+    background-color: #2c2b30c9;
     top: 0;
-    min-width: 0rem;
-  }
-
-  .modal-light {
-    width: 100%;
-    height: 50%;
-    border-radius: 0rem;
-    padding: 0rem;
-
-    h1 {
-      font-size: 2rem;
-      margin-top: 1rem;
-    }
+    overflow-y: auto;
+    align-items: stretch;
   }
 
   .modal-dark {
+    height: auto;
+    min-height: 60%;
+
     width: 100%;
-    height: 50%;
-    padding: 0rem;
+    padding: 2rem;
+    box-sizing: border-box;
     border-radius: 0rem;
-    padding: 0rem;
+  }
+
+  .modal-light {
+    height: auto;
+    min-height: 40%;
+    width: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+    border-radius: 0rem;
+  }
+
+  .textarea-desc-edit {
+    min-height: 6rem;
+  }
+
+  .pdetails-modal {
+    .table-cont {
+      width: 100%;
+      max-height: 7rem;
+      overflow-y: auto;
+      border: 1px solid #2c2b3046;
+      border-radius: 1rem;
+    }
   }
 }
